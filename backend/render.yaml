@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: lastmile-delivery-api
+    env: node
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma db push && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lastmile-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        value: LastMile Delivery <noreply@lastmile.dev>
+      - key: SMS_PROVIDER
+        value: console
+
+databases:
+  - name: lastmile-postgres
+    plan: free
+    databaseName: lastmile_delivery
+    user: lastmile_user

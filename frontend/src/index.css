@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    @apply bg-[#f8fafc] text-slate-900;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code, kbd, samp, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Custom scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+@layer components {
+  /* Delivero Sidebar (Dark Navy) */
+  .delivero-sidebar {
+    @apply bg-[#141724] text-slate-300 border-r border-[#1e2235];
+  }
+
+  .delivero-sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-slate-100 hover:bg-white/5;
+  }
+
+  .delivero-sidebar-item-active {
+    @apply delivero-sidebar-item bg-[#5046e4] text-white shadow-[0_4px_16px_rgba(80,70,228,0.35)] hover:bg-[#4338ca] hover:text-white;
+  }
+
+  /* Delivero Customer Sidebar (Clean Light) */
+  .delivero-light-sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100;
+  }
+
+  .delivero-light-sidebar-item-active {
+    @apply delivero-light-sidebar-item bg-[#5046e4]/10 text-[#5046e4] font-bold;
+  }
+
+  /* Delivero Card */
+  .delivero-card {
+    @apply bg-white rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(0,0,0,0.03)];
+  }
+
+  .delivero-card-hover {
+    @apply delivero-card transition-all duration-200 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:border-slate-300;
+  }
+
+  /* Delivero Inputs */
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs
+           placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5046e4]/20 focus:border-[#5046e4] focus:bg-white
+           transition-all duration-200;
+  }
+
+  /* Delivero Primary Buttons */
+  .btn-primary {
+    @apply px-5 py-2.5 bg-[#5046e4] text-white text-xs font-bold rounded-xl
+           hover:bg-[#4338ca] active:scale-[0.98] transition-all duration-200
+           shadow-[0_2px_10px_rgba(80,70,228,0.25)] hover:shadow-[0_4px_16px_rgba(80,70,228,0.4)]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2.5 bg-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200
+           hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98] transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2.5 bg-rose-50 text-rose-600 text-xs font-bold rounded-xl border border-rose-200
+           hover:bg-rose-100 active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-emerald {
+    @apply px-5 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl
+           hover:bg-emerald-500 active:scale-[0.98] transition-all duration-200
+           shadow-[0_2px_10px_rgba(16,185,129,0.25)];
+  }
+
+  /* Status Badges */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold tracking-wide;
+    font-size: 9px;
+  }
+
+  .badge-ontheway   { @apply bg-cyan-50 text-cyan-600 border border-cyan-200/80; }
+  .badge-delivered  { @apply bg-emerald-50 text-emerald-600 border border-emerald-200/80; }
+  .badge-pending    { @apply bg-amber-50 text-amber-600 border border-amber-200/80; }
+  .badge-cancelled  { @apply bg-rose-50 text-rose-600 border border-rose-200/80; }
+  .badge-pickedup   { @apply bg-blue-50 text-blue-600 border border-blue-200/80; }
+  .badge-active     { @apply bg-emerald-50 text-emerald-600 border border-emerald-200/80; }
+  .badge-inactive   { @apply bg-rose-50 text-rose-600 border border-rose-200/80; }
+  .badge-offline    { @apply bg-slate-100 text-slate-500 border border-slate-200; }
+  .badge-busy       { @apply bg-amber-50 text-amber-600 border border-amber-200; }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  *, *::before, *::after {
+    overflow: visible !important;
+  }
+
+  html, body, #root, .h-screen, .overflow-hidden, .overflow-y-auto, main, div {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    background: transparent !important;
+  }
+
+  aside, header, nav, button, .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .printable-invoice {
+    border: 1px solid #64748b !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    padding: 16px 20px !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
