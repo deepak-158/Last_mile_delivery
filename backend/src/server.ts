@@ -68,11 +68,15 @@ app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────
 const port = config.port;
+const host = '0.0.0.0'; // Required for Railway / container environments
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`🚀 LastMile Delivery API server running on port ${port}`);
+  app.listen(port, host, () => {
+    console.log(`🚀 LastMile Delivery API server running on ${host}:${port}`);
     console.log(`📍 Base URL: http://localhost:${port}${API_PREFIX}`);
     console.log(`🩺 Health check: http://localhost:${port}/health`);
+  }).on('error', (err) => {
+    console.error('❌ Server failed to start:', err);
+    process.exit(1);
   });
 }
 

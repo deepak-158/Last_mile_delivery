@@ -1,11 +1,11 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm install && npx prisma generate && npm run build"
+buildCommand = "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm run build"
 watchPatterns = ["src/**", "prisma/**", "package.json", "tsconfig.json"]
 
 [deploy]
-startCommand = "npx prisma db push --accept-data-loss && npm start"
+startCommand = "npm start"
 healthcheckPath = "/health"
-healthcheckTimeout = 300
+healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
