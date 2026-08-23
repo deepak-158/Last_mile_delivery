@@ -3,6 +3,7 @@ import { collection, getDocs, onSnapshot, query, orderBy } from 'firebase/firest
 import { db } from '../../config/firebase';
 import { notificationService, NotificationItem } from '../../services/notificationService';
 import { fcmService } from '../../services/fcmService';
+import { smsService } from '../../services/smsService';
 import { formatDate } from '../../utils/helpers';
 
 interface GroupedNotification {
@@ -25,6 +26,7 @@ export default function AdminNotificationsPage() {
   // Compose State
   const [showComposeModal, setShowComposeModal] = useState(false);
   const [targetType, setTargetType] = useState<'USER' | 'AGENT' | 'CUSTOMER' | 'ALL'>('USER');
+  const [dispatchChannel, setDispatchChannel] = useState<'PUSH_AND_IN_APP' | 'SMS_TWILIO' | 'OMNICHANNEL'>('PUSH_AND_IN_APP');
   const [selectedUserId, setSelectedUserId] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -123,20 +125,68 @@ export default function AdminNotificationsPage() {
           setSending(false);
           return;
         }
-        await notificationService.sendNotification({
-          userId: selectedUserId,
-          subject,
-          body,
-          type: 'ADMIN_DIRECT_MESSAGE',
-        });
-        showMsg(`Targeted push alert sent successfully.`);
+
+        // 1. In-App / Push Notification
+        if (dispatchChannel !== 'SMS_TWILIO') {
+          await notificationService.sendNotification({
+            userId: selectedUserId,
+            subject,
+            body,
+            type: 'ADMIN_DIRECT_MESSAGE',
+            channel: dispatchChannel,
+          });
+        }
+
+        // 2. Twilio SMS
+        if (dispatchChannel === 'SMS_TWILIO' || dispatchChannel === 'OMNICHANNEL') {
+          const targetUser = usersMap.get(selectedUserId);
+          const targetPhone = targetUser?.phone || '';
+          if (targetPhone) {
+            const smsRes = await smsService.sendSMS({
+              to: targetPhone,
+              body: `${subject}: ${body}`,
+              type: 'CUSTOM',
+            });
+            showMsg(`Dispatched via ${dispatchChannel} (${smsRes.message || 'Sent'}).`);
+          } else {
+            showMsg(`In-app notification sent. (User has no phone number on file for SMS).`);
+          }
+        } else {
+          showMsg(`Targeted push alert sent successfully.`);
+        }
       } else {
+        // Broadcast
         const count = await notificationService.sendToRole(targetType, {
           subject,
           body,
           type: 'ADMIN_BROADCAST',
         });
-        showMsg(`Broadcast push sent successfully to ${count} active recipients.`);
+
+        if (dispatchChannel === 'SMS_TWILIO' || dispatchChannel === 'OMNICHANNEL') {
+          // Send SMS to users with phone numbers
+          const targetUsers = users.filter((u) => {
+            const r = (u.role || 'CUSTOMER').toUpperCase();
+            if (targetType === 'ALL') return true;
+            if (targetType === 'CUSTOMER') return r === 'CUSTOMER' || r === 'USER';
+            if (targetType === 'AGENT') return r === 'AGENT';
+            return false;
+          });
+
+          let smsCount = 0;
+          for (const u of targetUsers) {
+            if (u.phone) {
+              await smsService.sendSMS({
+                to: u.phone,
+                body: `${subject}: ${body}`,
+                type: 'CUSTOM',
+              });
+              smsCount++;
+            }
+          }
+          showMsg(`Broadcast dispatched via ${dispatchChannel} to ${count} app users & ${smsCount} SMS recipients.`);
+        } else {
+          showMsg(`Broadcast push sent successfully to ${count} active recipients.`);
+        }
       }
 
       setShowComposeModal(false);
@@ -347,20 +397,37 @@ export default function AdminNotificationsPage() {
             </div>
 
             <form onSubmit={handleSendNotification} className="mt-4 space-y-4 text-xs">
-              <div>
-                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
-                  Target Audience
-                </label>
-                <select
-                  value={targetType}
-                  onChange={(e) => setTargetType(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
-                >
-                  <option value="USER">🎯 Specific User (Select Customer or Courier)</option>
-                  <option value="CUSTOMER">👤 All Customers (Active Buyers)</option>
-                  <option value="AGENT">🛵 All Delivery Courier Agents (Fleet)</option>
-                  <option value="ALL">📢 Global Broadcast (All Accounts)</option>
-                </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                    Target Audience
+                  </label>
+                  <select
+                    value={targetType}
+                    onChange={(e) => setTargetType(e.target.value as any)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
+                  >
+                    <option value="USER">🎯 Specific User</option>
+                    <option value="CUSTOMER">👤 All Customers</option>
+                    <option value="AGENT">🛵 All Agents (Fleet)</option>
+                    <option value="ALL">📢 Global Broadcast</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                    Delivery Channel
+                  </label>
+                  <select
+                    value={dispatchChannel}
+                    onChange={(e) => setDispatchChannel(e.target.value as any)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
+                  >
+                    <option value="PUSH_AND_IN_APP">🔔 Push & In-App (FCM)</option>
+                    <option value="SMS_TWILIO">📱 SMS (Twilio Gateway)</option>
+                    <option value="OMNICHANNEL">🌐 Omnichannel (Both Push + SMS)</option>
+                  </select>
+                </div>
               </div>
 
               {targetType === 'USER' && (

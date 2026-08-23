@@ -22,6 +22,7 @@ import { codConfigService } from './codConfigService';
 import { walletService } from './walletService';
 import { notificationService } from './notificationService';
 import { agentService } from './agentService';
+import { smsService } from './smsService';
 
 export interface OrderPreviewPayload {
   pickupPincode: string;
@@ -371,7 +372,7 @@ export const orderService = {
         : 'Order placed successfully by customer',
     });
 
-    // 1. Send targeted push notification to Customer
+    // 1. Send targeted push notification & SMS to Customer
     if (user) {
       await notificationService.sendNotification({
         userId: user.uid,
@@ -382,14 +383,20 @@ export const orderService = {
           ? `Your parcel ${orderNumber} is booked and assigned to courier ${assignedAgentName}. Total: ₹${finalTotalCharge}`
           : `Your order ${orderNumber} is scheduled for pickup at ${data.pickupPincode}. Total: ₹${finalTotalCharge}`,
       });
+
+      const customerPhone = data.pickupContactPhone || user.phoneNumber || '';
+      if (customerPhone) {
+        smsService.sendOrderBookedSMS(customerPhone, orderNumber, finalTotalCharge, assignedAgentName);
+      }
     }
 
-    // 2. Send targeted push notification ONLY to assigned Courier Agent
+    // 2. Send targeted push notification & SMS ONLY to assigned Courier Agent
     if (assignedAgentId) {
       try {
         const agentDoc = await getDoc(doc(db, 'agents', assignedAgentId));
         if (agentDoc.exists()) {
-          const agentUserId = agentDoc.data().userId;
+          const aData = agentDoc.data();
+          const agentUserId = aData.userId;
           if (agentUserId) {
             await notificationService.sendNotification({
               userId: agentUserId,
@@ -398,6 +405,12 @@ export const orderService = {
               subject: `🛵 New Dispatch Assigned: #${orderNumber}`,
               body: `Pickup: ${pickupCity} (${data.pickupPincode}) ➔ Drop: ${dropCity} (${data.dropPincode}). ₹${finalTotalCharge}`,
             });
+
+            const agentUserDoc = await getDoc(doc(db, 'users', agentUserId));
+            const agentPhone = agentUserDoc.exists() ? agentUserDoc.data().phone : '';
+            if (agentPhone) {
+              smsService.sendAgentDispatchSMS(agentPhone, orderNumber, data.pickupPincode, data.dropPincode, finalTotalCharge);
+            }
           }
         }
       } catch (err) {
@@ -646,7 +659,7 @@ export const orderService = {
       notes: data.notes || `Status transitioned to ${data.status}`,
     });
 
-    // Send push / in-app notification to customer
+    // Send push / in-app notification and Twilio SMS to customer
     const snap = await getDoc(orderRef);
     if (snap.exists()) {
       const order = snap.data();
@@ -658,6 +671,21 @@ export const orderService = {
           subject: `Order Update: ${order.orderNumber}`,
           body: `Your delivery package status is now "${data.status}". ${data.notes || ''}`,
         });
+
+        // Trigger Twilio SMS for key delivery milestones
+        const customerPhone = order.pickupContactPhone || order.user?.phone || '';
+        if (customerPhone) {
+          if (data.status === 'OUT_FOR_DELIVERY') {
+            smsService.sendOutForDeliverySMS(
+              customerPhone,
+              order.orderNumber || id.slice(0, 8),
+              order.assignedAgent?.user?.name || 'Rider',
+              order.deliveryOtp || '8492'
+            );
+          } else if (data.status === 'DELIVERED') {
+            smsService.sendDeliveredSMS(customerPhone, order.orderNumber || id.slice(0, 8));
+          }
+        }
       }
     }
 
