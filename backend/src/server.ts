@@ -67,17 +67,25 @@ app.use('*', (_req, res) => {
 app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────
+import { autoSeed } from './startup/autoSeed';
+
 const port = config.port;
 const host = '0.0.0.0'; // Required for Railway / container environments
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, host, () => {
-    console.log(`🚀 LastMile Delivery API server running on ${host}:${port}`);
-    console.log(`📍 Base URL: http://localhost:${port}${API_PREFIX}`);
-    console.log(`🩺 Health check: http://localhost:${port}/health`);
-  }).on('error', (err) => {
-    console.error('❌ Server failed to start:', err);
-    process.exit(1);
-  });
+  (async () => {
+    // Auto-seed on fresh deploys (Railway ephemeral filesystem)
+    await autoSeed();
+
+    app.listen(port, host, () => {
+      console.log(`🚀 LastMile Delivery API server running on ${host}:${port}`);
+      console.log(`📍 Base URL: http://localhost:${port}${API_PREFIX}`);
+      console.log(`🩺 Health check: http://localhost:${port}/health`);
+    }).on('error', (err) => {
+      console.error('❌ Server failed to start:', err);
+      process.exit(1);
+    });
+  })();
 }
 
 export default app;
+

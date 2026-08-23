@@ -1,81 +1,27 @@
-// Production schema — PostgreSQL (Railway / Render / AWS RDS)
-// For local SQLite dev, see schema.sqlite.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  CUSTOMER
-  AGENT
-  ADMIN
-}
-
-enum AreaType {
-  PINCODE
-  LOCALITY
-}
-
-enum OrderType {
-  B2B
-  B2C
-}
-
-enum RateType {
-  INTRA_ZONE
-  INTER_ZONE
-}
-
-enum PaymentType {
-  PREPAID
-  COD
-}
-
-enum OrderStatus {
-  PENDING
-  PICKED_UP
-  IN_TRANSIT
-  OUT_FOR_DELIVERY
-  DELIVERED
-  FAILED
-  RESCHEDULED
-}
-
-enum NotificationType {
-  STATUS_CHANGE
-  RESCHEDULE
-}
-
-enum NotificationChannel {
-  EMAIL
-  SMS
-}
-
-enum NotificationStatus {
-  PENDING
-  SENT
-  FAILED
-}
-
 model User {
-  id                 String               @id @default(uuid())
-  email              String               @unique
-  password           String
-  name               String
-  phone              String?
-  role               Role                 @default(CUSTOMER)
-  walletBalance      Float                @default(5000.0)
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  agent              Agent?
-  customerOrders     Order[]              @relation("CustomerOrders")
-  statusActions      OrderStatusHistory[] @relation("StatusActor")
-  notifications      Notification[]
-  savedAddresses     SavedAddress[]
+  id             String               @id @default(uuid())
+  email          String               @unique
+  password       String
+  name           String
+  phone          String?
+  role           String               @default("CUSTOMER") // CUSTOMER, AGENT, ADMIN
+  walletBalance  Float                @default(5000.0)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  agent          Agent?
+  customerOrders Order[]              @relation("CustomerOrders")
+  statusActions  OrderStatusHistory[] @relation("StatusActor")
+  notifications  Notification[]
+  savedAddresses SavedAddress[]
   walletTransactions WalletTransaction[]
 
   @@map("users")
@@ -105,7 +51,7 @@ model SavedAddress {
   city         String
   state        String
   locality     String?
-  address      String
+  address      String   // Specific flat/house/building/street
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -132,7 +78,7 @@ model ZoneAreaMapping {
   id             String   @id @default(uuid())
   zoneId         String
   areaIdentifier String
-  areaType       AreaType @default(PINCODE)
+  areaType       String   @default("PINCODE") // PINCODE, LOCALITY
   createdAt      DateTime @default(now())
   zone           Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
 
@@ -142,24 +88,24 @@ model ZoneAreaMapping {
 }
 
 model RateCard {
-  id          String    @id @default(uuid())
-  orderType   OrderType
-  rateType    RateType
+  id          String   @id @default(uuid())
+  orderType   String   // B2B, B2C
+  rateType    String   // INTRA_ZONE, INTER_ZONE
   baseCharge  Float
   perKgCharge Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([orderType, rateType])
   @@map("rate_cards")
 }
 
 model CODSurchargeConfig {
-  id              String    @id @default(uuid())
-  orderType       OrderType @unique
+  id              String   @id @default(uuid())
+  orderType       String   @unique // B2B, B2C
   surchargeAmount Float
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("cod_surcharge_configs")
 }
@@ -201,12 +147,12 @@ model Order {
   actualWeightKg     Float
   volumetricWeightKg Float
   billableWeightKg   Float
-  orderType          OrderType
-  paymentType        PaymentType
+  orderType          String               // B2B, B2C
+  paymentType        String               // PREPAID, COD
   baseCharge         Float
   codSurcharge       Float                @default(0)
   totalCharge        Float
-  status             OrderStatus          @default(PENDING)
+  status             String               @default("PENDING")
   assignedAgentId    String?
   rescheduleDate     DateTime?
   createdAt          DateTime             @default(now())
@@ -226,14 +172,14 @@ model Order {
 }
 
 model OrderStatusHistory {
-  id        String      @id @default(uuid())
+  id        String   @id @default(uuid())
   orderId   String
-  status    OrderStatus
-  timestamp DateTime    @default(now())
+  status    String
+  timestamp DateTime @default(now())
   actorId   String
   notes     String?
-  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  actor     User        @relation("StatusActor", fields: [actorId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  actor     User     @relation("StatusActor", fields: [actorId], references: [id])
 
   @@index([orderId])
   @@index([timestamp])
@@ -241,18 +187,18 @@ model OrderStatusHistory {
 }
 
 model Notification {
-  id        String              @id @default(uuid())
+  id        String    @id @default(uuid())
   orderId   String
   userId    String
-  type      NotificationType
-  channel   NotificationChannel
-  status    NotificationStatus  @default(PENDING)
+  type      String
+  channel   String
+  status    String    @default("PENDING")
   subject   String?
   body      String?
   sentAt    DateTime?
-  createdAt DateTime            @default(now())
-  order     Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  user      User                @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
 
   @@index([orderId])
   @@index([userId])
