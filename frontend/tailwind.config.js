@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        '3xs': ['9px', '12px'],
-        '2xs': ['10px', '14px'],
+        '3xs': ['11px', '15px'],
+        '2xs': ['12px', '16px'],
       },
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],

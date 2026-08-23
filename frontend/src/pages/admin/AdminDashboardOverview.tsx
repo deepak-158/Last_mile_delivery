@@ -14,7 +14,7 @@ export default function AdminDashboardOverview() {
       setLoading(true);
       try {
         const [ordersRes, agentsRes, zonesRes] = await Promise.all([
-          orderApi.getAll().catch(() => ({ data: [] })),
+          orderApi.getAll({ all: 'true' }).catch(() => ({ data: [] })),
           agentApi.getAll().catch(() => ({ data: [] })),
           zoneApi.getAll().catch(() => ({ data: [] })),
         ]);
@@ -220,6 +220,40 @@ export default function AdminDashboardOverview() {
 
         {/* Right: Fleet & Zones Overview (1 col) */}
         <div className="delivero-card p-6 space-y-6">
+          {/* Pending Agent Verifications */}
+          {agents.filter((a) => a.isVerified === false).length > 0 && (
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 space-y-3">
+              <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
+                <span className="text-2xs font-extrabold text-amber-900 flex items-center gap-1.5">
+                  <span>⏳</span> Pending Approvals ({agents.filter((a) => a.isVerified === false).length})
+                </span>
+                <Link to="/admin/users" className="text-3xs font-bold text-amber-800 hover:underline">
+                  View All →
+                </Link>
+              </div>
+              <div className="space-y-2">
+                {agents.filter((a) => a.isVerified === false).map((ag) => (
+                  <div key={ag.id} className="p-2.5 rounded-xl bg-white border border-amber-200/60 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">{ag.user?.name || 'Agent'}</span>
+                      <span className="text-3xs text-slate-400 font-mono">{ag.vehicleType || 'Courier'} • {ag.vehicleNumber || 'Pending Reg'}</span>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        await agentApi.verifyAgent(ag.id, true);
+                        const res = await agentApi.getAll();
+                        setAgents(res.data || []);
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xs transition-colors shrink-0 shadow-sm"
+                    >
+                      ✓ Approve
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
               <h3 className="text-sm font-extrabold text-slate-900">Active Fleet</h3>

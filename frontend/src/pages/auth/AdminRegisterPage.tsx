@@ -40,10 +40,11 @@ export default function AdminRegisterPage() {
         email: email.trim(),
         password,
         phone: phone.trim(),
+        role: 'ADMIN',
       });
       navigate('/admin/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Registration failed');
+      setError(err?.response?.data?.message || err?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

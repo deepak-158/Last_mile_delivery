@@ -16,14 +16,15 @@ export default function AgentDashboardOverview() {
     const fetchAgentData = async () => {
       setLoading(true);
       try {
-        const [ordersRes, meRes] = await Promise.all([
-          orderApi.getAll().catch(() => ({ data: [] })),
-          agentApi.getMe().catch(() => ({ data: null })),
-        ]);
-        setOrders(ordersRes.data || []);
-        if (meRes.data) {
-          setAgentProfile(meRes.data);
-          setIsAvailable(meRes.data.isAvailable);
+        const meRes = await agentApi.getMe().catch(() => ({ data: null }));
+        const myAgent = meRes.data;
+        if (myAgent) {
+          setAgentProfile(myAgent);
+          setIsAvailable(myAgent.isAvailable);
+          const ordersRes = await orderApi.getAll({ assignedAgentId: myAgent.id }).catch(() => ({ data: [] }));
+          setOrders((ordersRes.data || []).filter((o: any) => o.assignedAgentId === myAgent.id || o.assignedAgent?.id === myAgent.id));
+        } else {
+          setOrders([]);
         }
       } catch (err) {
         console.error('Failed to load agent dashboard data:', err);
@@ -71,12 +72,17 @@ export default function AgentDashboardOverview() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleToggleAvailability}
+            disabled={agentProfile?.isVerified === false}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm ${
-              isAvailable ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-800 text-white'
+              agentProfile?.isVerified === false
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : isAvailable
+                ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                : 'bg-slate-700 hover:bg-slate-800 text-white'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
-            {isAvailable ? 'Status: Online Dispatch' : 'Status: Offline'}
+            <span className={`w-2 h-2 rounded-full ${isAvailable && agentProfile?.isVerified !== false ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
+            {agentProfile?.isVerified === false ? 'Awaiting Verification' : isAvailable ? 'Status: Online Dispatch' : 'Status: Offline'}
           </button>
 
           <Link to="/agent/orders" className="btn-primary text-xs font-bold shadow-sm">
@@ -84,6 +90,24 @@ export default function AgentDashboardOverview() {
           </Link>
         </div>
       </div>
+
+      {/* Pending Admin Verification Banner */}
+      {agentProfile?.isVerified === false && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <span className="text-3xl p-2 rounded-xl bg-amber-100/80">⏳</span>
+            <div>
+              <h3 className="text-sm font-extrabold text-amber-950">Courier Profile Awaiting Admin Verification</h3>
+              <p className="text-xs text-amber-800 mt-0.5">
+                Your agent application is under review by the Operations Admin. Once verified, your status will switch to <strong>Online Dispatch</strong> and you can start accepting package deliveries.
+              </p>
+            </div>
+          </div>
+          <span className="px-3.5 py-1.5 rounded-full bg-amber-200/80 text-amber-950 text-3xs font-black uppercase tracking-wider shrink-0 border border-amber-300">
+            🟡 Pending Approval
+          </span>
+        </div>
+      )}
 
       {/* Real Performance Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

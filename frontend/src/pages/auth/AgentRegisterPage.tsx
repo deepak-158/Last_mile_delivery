@@ -42,10 +42,13 @@ export default function AgentRegisterPage() {
         email: email.trim() || `${phone.trim()}@agent.local`,
         password,
         phone: phone.trim(),
+        role: 'AGENT',
+        vehicleType,
+        vehicleNumber: vehicleNumber.trim() || 'Pending Verification',
       });
       navigate('/agent/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Registration failed');
+      setError(err?.response?.data?.message || err?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

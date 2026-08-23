@@ -1,17 +1,36 @@
-import api from './client';
+/**
+ * Firebase Spark Service Adapter for API Endpoints.
+ * Bridges all existing UI pages seamlessly to Firebase Auth, Cloud Firestore, and FCM.
+ */
+import { authService } from '../services/authService';
+import { addressService } from '../services/addressService';
+import { zoneService } from '../services/zoneService';
+import { rateCardService } from '../services/rateCardService';
+import { codConfigService } from '../services/codConfigService';
+import { orderService } from '../services/orderService';
+import { agentService } from '../services/agentService';
+import { walletService } from '../services/walletService';
+
+// Helper to wrap service responses in an axios-like `{ data: ... }` envelope
+const wrap = <T>(promise: Promise<T>): Promise<{ data: T }> =>
+  promise.then((data) => ({ data }));
 
 // ─── Auth ─────────────────────────────────────────────────
 export const authApi = {
-  register: (data: { email: string; password: string; name: string; phone?: string }) =>
-    api.post('/auth/register', data),
+  register: (data: { email: string; password: string; name: string; phone?: string; role?: any }) =>
+    wrap(authService.register(data)),
   login: (data: { email: string; password: string }) =>
-    api.post('/auth/login', data),
-  me: () => api.get('/auth/me'),
+    wrap(authService.login(data.email, data.password)),
+  me: () =>
+    wrap(
+      authService
+        .getUserProfile(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).id : '')
+    ),
 };
 
 // ─── Address Book ─────────────────────────────────────────
 export const addressApi = {
-  getAll: () => api.get('/addresses'),
+  getAll: () => wrap(addressService.getAll()),
   save: (data: {
     label: string;
     contactName: string;
@@ -21,77 +40,79 @@ export const addressApi = {
     state: string;
     locality?: string;
     address: string;
-  }) => api.post('/addresses', data),
-  delete: (id: string) => api.delete(`/addresses/${id}`),
+  }) => wrap(addressService.save(data)),
+  delete: (id: string) => wrap(addressService.delete(id)),
 };
 
 // ─── Zones (Admin) ────────────────────────────────────────
 export const zoneApi = {
-  getAll: () => api.get('/admin/zones'),
-  getById: (id: string) => api.get(`/admin/zones/${id}`),
+  getAll: () => wrap(zoneService.getAll()),
+  getById: (id: string) => wrap(zoneService.getById(id)),
   create: (data: { name: string; description?: string }) =>
-    api.post('/admin/zones', data),
+    wrap(zoneService.create(data)),
   update: (id: string, data: { name?: string; description?: string }) =>
-    api.put(`/admin/zones/${id}`, data),
-  delete: (id: string) => api.delete(`/admin/zones/${id}`),
-  getAreas: (zoneId: string) => api.get(`/admin/zones/${zoneId}/areas`),
+    wrap(zoneService.update(id, data)),
+  delete: (id: string) => wrap(zoneService.delete(id)),
+  getAreas: (zoneId: string) => wrap(zoneService.getAreas(zoneId)),
   addArea: (zoneId: string, data: { areaIdentifier: string; areaType: string }) =>
-    api.post(`/admin/zones/${zoneId}/areas`, data),
-  removeArea: (mappingId: string) => api.delete(`/admin/zones/${mappingId}`),
+    wrap(zoneService.addArea(zoneId, data)),
+  removeArea: (mappingId: string) => wrap(zoneService.removeArea(mappingId)),
 };
 
 // ─── Rate Cards (Admin) ───────────────────────────────────
 export const rateCardApi = {
-  getAll: () => api.get('/admin/rate-cards'),
+  getAll: () => wrap(rateCardService.getAll()),
   create: (data: { orderType: string; rateType: string; baseCharge: number; perKgCharge: number }) =>
-    api.post('/admin/rate-cards', data),
+    wrap(rateCardService.create(data)),
   update: (id: string, data: { baseCharge?: number; perKgCharge?: number }) =>
-    api.put(`/admin/rate-cards/${id}`, data),
-  delete: (id: string) => api.delete(`/admin/rate-cards/${id}`),
+    wrap(rateCardService.update(id, data)),
+  delete: (id: string) => wrap(rateCardService.delete(id)),
 };
 
 // ─── COD Config (Admin) ──────────────────────────────────
 export const codConfigApi = {
-  getAll: () => api.get('/admin/cod-config'),
+  getAll: () => wrap(codConfigService.getAll()),
   upsert: (data: { orderType: string; surchargeAmount: number }) =>
-    api.put('/admin/cod-config', data),
+    wrap(codConfigService.upsert(data)),
 };
 
 // ─── Orders ──────────────────────────────────────────────
 export const orderApi = {
-  lookupPincode: (pincode: string) => api.get(`/orders/lookup-pincode/${pincode}`),
-  preview: (data: any) => api.post('/orders/preview', data),
-  create: (data: any) => api.post('/orders', data),
-  getAll: (params?: Record<string, string>) => api.get('/orders', { params }),
-  getById: (id: string) => api.get(`/orders/${id}`),
+  lookupPincode: (pincode: string) => wrap(orderService.lookupPincode(pincode)),
+  preview: (data: any) => wrap(orderService.preview(data)),
+  create: (data: any) => wrap(orderService.create(data)),
+  getAll: (params?: Record<string, string>) => wrap(orderService.getAll(params)),
+  getById: (id: string) => wrap(orderService.getById(id)),
   updateStatus: (id: string, data: { status: string; notes?: string }) =>
-    api.put(`/orders/${id}/status`, data),
+    wrap(orderService.updateStatus(id, data)),
   reschedule: (id: string, data: { rescheduleDate: string }) =>
-    api.post(`/orders/${id}/reschedule`, data),
+    wrap(orderService.reschedule(id, data)),
+  subscribe: (id: string, callback: (order: any) => void) =>
+    orderService.subscribeOrder(id, callback),
 };
 
 // ─── Agents ──────────────────────────────────────────────
 export const agentApi = {
-  getAll: () => api.get('/admin/agents'),
-  getMe: () => api.get('/agent/me'),
+  getAll: () => wrap(agentService.getAll()),
+  getMe: () => wrap(agentService.getMe()),
+  verifyAgent: (agentId: string, approved: boolean) =>
+    wrap(agentService.verifyAgent(agentId, approved)),
   updateLocation: (data: { latitude: number; longitude: number; currentZoneId?: string }) =>
-    api.put('/agent/location', data),
+    wrap(agentService.updateLocation(data)),
   updateAvailability: (data: { isAvailable: boolean }) =>
-    api.put('/agent/availability', data),
+    wrap(agentService.updateAvailability(data)),
   manualAssign: (orderId: string, agentId: string) =>
-    api.post(`/admin/agents/orders/${orderId}/assign`, { agentId }),
-  autoAssign: (orderId: string) =>
-    api.post(`/admin/agents/orders/${orderId}/auto-assign`),
+    wrap(agentService.manualAssign(orderId, agentId)),
+  autoAssign: (orderId: string) => wrap(agentService.autoAssign(orderId)),
 };
 
 // ─── Users (Admin) ───────────────────────────────────────
 export const userApi = {
-  getAll: () => api.get('/auth/users'),
+  getAll: () => wrap(authService.getAllUsers()),
 };
 
 // ─── Wallet (Customer) ───────────────────────────────────
 export const walletApi = {
-  get: () => api.get('/auth/wallet'),
-  topup: (amount: number) => api.post('/auth/wallet/topup', { amount }),
+  get: () => wrap(walletService.getWallet()),
+  topup: (amount: number) => wrap(walletService.topup(amount)),
 };
-

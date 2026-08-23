@@ -48,6 +48,7 @@ import AdminActivityLogsPage from './pages/admin/AdminActivityLogsPage';
 import ZonesPage from './pages/admin/ZonesPage';
 import RateCardsPage from './pages/admin/RateCardsPage';
 import CODConfigPage from './pages/admin/CODConfigPage';
+import UserNotificationsPage from './pages/shared/UserNotificationsPage';
 
 // Role Guard Component
 function RoleRoute({ children, allowedRoles }: { children: JSX.Element; allowedRoles: string[] }) {
@@ -92,10 +93,13 @@ function RootRedirect() {
   return <Navigate to="/customer/home" replace />;
 }
 
+import FCMNotificationHandler from './components/FCMNotificationHandler';
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <FCMNotificationHandler />
         <Routes>
           {/* Public Authentication Routes */}
           <Route path="/login" element={<LoginPage />} />
@@ -208,7 +212,7 @@ export default function App() {
               path="/customer/notifications"
               element={
                 <RoleRoute allowedRoles={['CUSTOMER', 'ADMIN']}>
-                  <AdminNotificationsPage />
+                  <UserNotificationsPage />
                 </RoleRoute>
               }
             />
@@ -266,7 +270,7 @@ export default function App() {
               path="/agent/notifications"
               element={
                 <RoleRoute allowedRoles={['AGENT', 'ADMIN']}>
-                  <AdminNotificationsPage />
+                  <UserNotificationsPage />
                 </RoleRoute>
               }
             />

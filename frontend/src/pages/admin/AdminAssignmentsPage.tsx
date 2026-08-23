@@ -15,7 +15,7 @@ export default function AdminAssignmentsPage() {
     setLoading(true);
     try {
       const [ordersRes, agentsRes] = await Promise.all([
-        orderApi.getAll(),
+        orderApi.getAll({ all: 'true' }),
         agentApi.getAll().catch(() => ({ data: [] })),
       ]);
       setOrders(ordersRes.data || []);

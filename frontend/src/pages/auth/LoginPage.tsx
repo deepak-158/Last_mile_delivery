@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { seedService } from '../../services/seedService';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
+import GoogleOnboardingModal from '../../components/GoogleOnboardingModal';
 
 export default function LoginPage() {
   const [selectedRole, setSelectedRole] = useState<'Customer' | 'Delivery Agent' | 'Admin'>('Customer');
@@ -12,8 +14,9 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
+  const [onboardingUser, setOnboardingUser] = useState<any>(null);
 
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleRoleChange = (role: 'Customer' | 'Delivery Agent' | 'Admin') => {
@@ -44,7 +47,20 @@ export default function LoginPage() {
       }
 
       await login(loginEmail, password || 'password123');
-      navigate('/');
+
+      const savedUserStr = localStorage.getItem('user');
+      if (savedUserStr) {
+        const parsed = JSON.parse(savedUserStr);
+        if (parsed.role === 'ADMIN') {
+          navigate('/admin/dashboard');
+          return;
+        }
+        if (parsed.role === 'AGENT') {
+          navigate('/agent/dashboard');
+          return;
+        }
+      }
+      navigate('/customer/home');
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Invalid credentials. Please verify your email and password.');
     } finally {
@@ -240,8 +256,39 @@ export default function LoginPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => handleRoleChange('Customer')}
-                  className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-2xs font-bold text-slate-700 flex items-center justify-center gap-2 transition-colors"
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      setError('');
+                      const targetRole = selectedRole === 'Admin' ? 'ADMIN' : selectedRole === 'Delivery Agent' ? 'AGENT' : 'CUSTOMER';
+                      await loginWithGoogle(targetRole);
+
+                      const savedUserStr = localStorage.getItem('user');
+                      if (savedUserStr) {
+                        const parsed = JSON.parse(savedUserStr);
+                        // Admin accounts bypass onboarding completely
+                        if (parsed.role === 'ADMIN') {
+                          navigate('/admin/dashboard');
+                          return;
+                        }
+                        // If new user or missing phone for customer/agent, show onboarding modal
+                        if (parsed.isNewUser || !parsed.phone) {
+                          setOnboardingUser(parsed);
+                          return;
+                        }
+                        if (parsed.role === 'AGENT') {
+                          navigate('/agent/dashboard');
+                          return;
+                        }
+                      }
+                      navigate('/customer/home');
+                    } catch (err: any) {
+                      setError(err?.message || 'Google Sign-In failed.');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-2xs font-bold text-slate-700 flex items-center justify-center gap-2 transition-colors w-full col-span-2 sm:col-span-1"
                 >
                   <span className="text-sm font-bold text-red-500">G</span>
                   <span>Google</span>
@@ -258,18 +305,51 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Switch to Register */}
-            <div className="text-center pt-2">
+            {/* Switch to Register & Demo Seed */}
+            <div className="text-center pt-2 space-y-2">
               <p className="text-xs text-slate-500 font-medium">
                 Don't have an account?{' '}
                 <Link to="/register" className="text-[#5046e4] font-bold hover:underline">
                   Register Now
                 </Link>
               </p>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  setLoading(true);
+                  setError('');
+                  const res = await seedService.initializeDemoData();
+                  setLoading(false);
+                  if (res.success) {
+                    alert('✅ Firebase demo data (Zones, Rate Cards, Demo Accounts) initialized successfully!');
+                  } else {
+                    setError(res.message);
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 text-2xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors"
+              >
+                <span>🌱</span>
+                <span>Initialize Firebase Demo Data</span>
+              </button>
             </div>
           </div>
         </div>
       </main>
+
+      {/* Google Sign-In New User Onboarding Modal */}
+      {onboardingUser && (
+        <GoogleOnboardingModal
+          user={onboardingUser}
+          onComplete={(profile) => {
+            setOnboardingUser(null);
+            if (profile.role === 'ADMIN') navigate('/admin/dashboard');
+            else if (profile.role === 'AGENT') navigate('/agent/dashboard');
+            else navigate('/customer/home');
+          }}
+          onCancel={() => setOnboardingUser(null)}
+        />
+      )}
 
       {/* Forgot Password Modal */}
       {showForgotModal && (

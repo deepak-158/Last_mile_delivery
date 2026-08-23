@@ -28,7 +28,7 @@ export default function RateCardsPage() {
     setLoading(true);
     try {
       const res = await rateCardApi.getAll();
-      setRateCards(res.data);
+      setRateCards(res.data || []);
     } catch (err) {
       console.error('Failed to load rate cards:', err);
     } finally {
@@ -89,45 +89,54 @@ export default function RateCardsPage() {
   const simD = parseFloat(simDistance) || 0;
   const baseT = matchingCard ? matchingCard.baseCharge : 50;
   const weightT = matchingCard ? simW * matchingCard.perKgCharge : simW * 20;
-  const distT = simRateType === 'INTRA_ZONE' ? Math.max(0, simD - 5) * 1.8 : simD * 0.4;
+  const distT = simRateType === 'INTRA_ZONE' ? Math.max(0, simD - 5) * 5.0 : Math.max(0, simD - 50) * 3.0;
   const simTotal = Math.round((baseT + weightT + distT) * 100) / 100;
 
   return (
-    <div className="animate-fade-in max-w-6xl mx-auto pb-16">
+    <div className="animate-fade-in max-w-6xl mx-auto pb-16 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-slate-100 via-indigo-200 to-slate-300 bg-clip-text text-transparent">
-            Tariff & Rate Card Engineering
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>💳</span> Tariff & Rate Card Engineering
           </h1>
-          <p className="text-slate-400 mt-1">Configure multi-tier shipping matrices and simulate customer pricing in real time</p>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Configure multi-tier shipping matrices and simulate customer pricing in real time
+          </p>
         </div>
-        <button onClick={handleOpenCreate} className="btn-primary text-xs py-3 px-5 shadow-glow font-bold">
+        <button
+          onClick={handleOpenCreate}
+          className="btn-primary text-xs font-bold shadow-sm cursor-pointer"
+        >
           + Add New Rate Card
         </button>
       </div>
 
-      {/* Live Interactive Tariff Simulator */}
-      <div className="glass-panel p-6 mb-8 border-2 border-indigo-500/30 bg-gradient-to-r from-slate-950 via-slate-900/90 to-slate-950">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+      {/* Live Interactive Tariff Simulator Banner */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 shadow-xl border border-indigo-800/40">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-indigo-800/40">
           <div>
-            <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <span className="text-indigo-400">⚡</span> Live Dynamic Tariff Simulator
+            <h3 className="text-sm font-black text-amber-300 flex items-center gap-1.5">
+              <span>⚡</span> Live Dynamic Tariff Simulator
             </h3>
-            <p className="text-xs text-slate-400">Test how tariff parameters calculate total freight for any package</p>
+            <p className="text-2xs text-slate-300 font-medium mt-0.5">
+              Test how tariff parameters calculate total customer freight for any package
+            </p>
           </div>
-          <span className="badge bg-indigo-500/20 text-indigo-300 text-xs">
-            Interactive Sandbox
+          <span className="text-3xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+            Realtime Matrix Engine
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div>
-            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">Order Mode</label>
+            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              Order Mode
+            </label>
             <select
               value={simOrderType}
               onChange={(e) => setSimOrderType(e.target.value)}
-              className="input-field py-2 text-xs font-semibold text-slate-200"
+              className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold"
             >
               <option value="B2C">🛍️ B2C (Retail)</option>
               <option value="B2B">🏢 B2B (Enterprise)</option>
@@ -135,11 +144,13 @@ export default function RateCardsPage() {
           </div>
 
           <div>
-            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">Corridor</label>
+            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              Corridor
+            </label>
             <select
               value={simRateType}
               onChange={(e) => setSimRateType(e.target.value)}
-              className="input-field py-2 text-xs font-semibold text-slate-200"
+              className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold"
             >
               <option value="INTRA_ZONE">🏠 Intra-Zone (Regional)</option>
               <option value="INTER_ZONE">🌐 Inter-Zone (Express)</option>
@@ -147,135 +158,174 @@ export default function RateCardsPage() {
           </div>
 
           <div>
-            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">Billable Weight (kg)</label>
+            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              Billable Weight (kg)
+            </label>
             <input
               type="number"
               step="0.5"
               min="0.1"
               value={simWeight}
               onChange={(e) => setSimWeight(e.target.value)}
-              className="input-field py-2 text-xs font-mono font-bold"
+              className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono font-bold"
             />
           </div>
 
           <div>
-            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">Route Distance (km)</label>
+            <label className="block text-3xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              Route Distance (km)
+            </label>
             <input
               type="number"
               step="5"
               min="1"
               value={simDistance}
               onChange={(e) => setSimDistance(e.target.value)}
-              className="input-field py-2 text-xs font-mono font-bold"
+              className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono font-bold"
             />
           </div>
         </div>
 
         {/* Calculated Simulation Output */}
-        <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-4 text-xs">
+        <div className="p-4 rounded-2xl bg-black/40 border border-indigo-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-6 text-xs">
             <div>
-              <span className="text-3xs text-slate-500 uppercase">Base Tariff:</span>
-              <p className="font-bold font-mono text-slate-200">{formatCurrency(baseT)}</p>
+              <span className="text-3xs text-slate-400 uppercase font-bold">Base Tariff:</span>
+              <p className="font-bold font-mono text-white text-sm">{formatCurrency(baseT)}</p>
             </div>
             <div>
-              <span className="text-3xs text-slate-500 uppercase">Weight Charge:</span>
-              <p className="font-bold font-mono text-slate-200">{formatCurrency(weightT)}</p>
+              <span className="text-3xs text-slate-400 uppercase font-bold">Weight Charge:</span>
+              <p className="font-bold font-mono text-white text-sm">{formatCurrency(weightT)}</p>
             </div>
             <div>
-              <span className="text-3xs text-slate-500 uppercase">Distance Charge:</span>
-              <p className="font-bold font-mono text-slate-200">{formatCurrency(distT)}</p>
+              <span className="text-3xs text-slate-400 uppercase font-bold">Distance Charge:</span>
+              <p className="font-bold font-mono text-white text-sm">{formatCurrency(distT)}</p>
             </div>
           </div>
 
           <div className="text-right">
-            <span className="text-3xs text-indigo-400 font-bold uppercase">Estimated Total Customer Fare</span>
-            <p className="text-2xl font-black text-indigo-300 font-mono">{formatCurrency(simTotal)}</p>
+            <span className="text-3xs text-indigo-300 font-bold uppercase tracking-wider">
+              Estimated Total Customer Fare
+            </span>
+            <p className="text-3xl font-black text-amber-300 font-mono">{formatCurrency(simTotal)}</p>
           </div>
         </div>
       </div>
 
-      {/* Configured Rate Cards Grid */}
-      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
-        Active Production Rate Cards ({rateCards.length})
-      </h3>
+      {/* Production Rate Cards Grid */}
+      <div className="space-y-4">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+          Active Production Rate Cards ({rateCards.length})
+        </h3>
 
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <span className="w-9 h-9 border-3 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-          <p className="text-xs text-slate-400">Loading rate cards...</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {rateCards.map((card) => (
-            <div key={card.id} className="glass-panel p-6 flex flex-col justify-between hover:border-indigo-500/40 transition-all">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-2xl shadow-glow">
-                      {card.rateType === 'INTRA_ZONE' ? '🏠' : '🌐'}
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <span className="w-8 h-8 border-3 border-[#5046e4]/30 border-t-[#5046e4] rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {rateCards.map((card) => (
+              <div
+                key={card.id}
+                className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shadow-2xs">
+                        {card.rateType === 'INTRA_ZONE' ? '🏠' : '🌐'}
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black text-slate-900">
+                          {card.orderType} • {card.rateType === 'INTRA_ZONE' ? 'Intra-Zone' : 'Inter-Zone'}
+                        </h3>
+                        <p className="text-2xs text-slate-500 font-medium">
+                          {card.rateType === 'INTRA_ZONE'
+                            ? 'Within Same Distribution Zone'
+                            : 'Cross-Zone Long-Haul Interstate'}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleOpenEdit(card)}
+                      className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold transition-colors cursor-pointer"
+                    >
+                      ✏️ Edit Tariff
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div>
+                      <span className="text-3xs font-extrabold uppercase text-slate-400 tracking-wider">
+                        Base Handling Charge
+                      </span>
+                      <p className="text-2xl font-black text-slate-900 font-mono mt-0.5">
+                        {formatCurrency(card.baseCharge)}
+                      </p>
                     </div>
                     <div>
-                      <h3 className="text-base font-extrabold text-slate-100">
-                        {card.orderType} • {card.rateType === 'INTRA_ZONE' ? 'Intra-Zone' : 'Inter-Zone'}
-                      </h3>
-                      <p className="text-2xs text-slate-400">
-                        {card.rateType === 'INTRA_ZONE' ? 'Within Same Distribution Zone' : 'Cross-Zone Long-Haul Interstate'}
+                      <span className="text-3xs font-extrabold uppercase text-slate-400 tracking-wider">
+                        Per Additional Kg
+                      </span>
+                      <p className="text-2xl font-black text-[#5046e4] font-mono mt-0.5">
+                        {formatCurrency(card.perKgCharge)}{' '}
+                        <span className="text-xs text-slate-500 font-sans font-semibold">/ kg</span>
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleOpenEdit(card)}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 font-bold border border-slate-700"
-                  >
-                    ✏️ Edit Tariff
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                  <div>
-                    <span className="text-3xs font-bold uppercase text-slate-400">Base Handling Charge</span>
-                    <p className="text-xl font-extrabold text-slate-100 font-mono mt-0.5">{formatCurrency(card.baseCharge)}</p>
-                  </div>
-                  <div>
-                    <span className="text-3xs font-bold uppercase text-slate-400">Per Additional Kg</span>
-                    <p className="text-xl font-extrabold text-indigo-300 font-mono mt-0.5">{formatCurrency(card.perKgCharge)} / kg</p>
-                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Edit/Create Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="glass-panel max-w-md w-full p-6 animate-scale-in border-2 border-indigo-500/40">
-            <h3 className="text-xl font-bold text-slate-100 mb-4">
-              {editingCard ? 'Modify Rate Card Tariff' : 'Create New Tariff Matrix'}
-            </h3>
-            {error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs mb-4">{error}</div>}
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 animate-scale-up text-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-extrabold text-slate-900">
+                {editingCard ? 'Modify Rate Card Tariff' : 'Create New Tariff Matrix'}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-slate-400 hover:text-slate-700 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {error && (
+              <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
               {!editingCard && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-2xs font-bold uppercase text-slate-400 mb-1.5">Order Type</label>
+                    <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                      Order Type
+                    </label>
                     <select
                       value={orderType}
                       onChange={(e) => setOrderType(e.target.value)}
-                      className="input-field text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                     >
                       <option value="B2C">B2C (Retail)</option>
                       <option value="B2B">B2B (Enterprise)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-2xs font-bold uppercase text-slate-400 mb-1.5">Rate Type</label>
+                    <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                      Rate Type
+                    </label>
                     <select
                       value={rateType}
                       onChange={(e) => setRateType(e.target.value)}
-                      className="input-field text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                     >
                       <option value="INTRA_ZONE">Intra-Zone</option>
                       <option value="INTER_ZONE">Inter-Zone</option>
@@ -285,39 +335,57 @@ export default function RateCardsPage() {
               )}
 
               <div>
-                <label className="block text-2xs font-bold uppercase text-slate-400 mb-1.5">Base Charge (INR)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={baseCharge}
-                  onChange={(e) => setBaseCharge(e.target.value)}
-                  className="input-field font-mono font-bold text-sm"
-                  placeholder="e.g. 50.00"
-                  required
-                />
+                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Base Charge (INR)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-2.5 font-bold text-slate-400">₹</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={baseCharge}
+                    onChange={(e) => setBaseCharge(e.target.value)}
+                    required
+                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-mono font-bold text-slate-900 text-sm"
+                    placeholder="50.00"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-2xs font-bold uppercase text-slate-400 mb-1.5">Per Kg Charge (INR)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={perKgCharge}
-                  onChange={(e) => setPerKgCharge(e.target.value)}
-                  className="input-field font-mono font-bold text-sm"
-                  placeholder="e.g. 20.00"
-                  required
-                />
+                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Per Additional Kg Charge (INR)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-2.5 font-bold text-slate-400">₹</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={perKgCharge}
+                    onChange={(e) => setPerKgCharge(e.target.value)}
+                    required
+                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-mono font-bold text-slate-900 text-sm"
+                    placeholder="20.00"
+                  />
+                </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={saving} className="btn-primary flex-1">
-                  {saving ? 'Saving...' : 'Save Tariff'}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn-primary text-xs font-bold px-5 py-2 shadow-md cursor-pointer"
+                >
+                  {saving ? 'Saving...' : 'Save Rate Card'}
                 </button>
               </div>
             </form>

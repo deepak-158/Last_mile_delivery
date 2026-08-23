@@ -20,7 +20,7 @@ export default function ZonesPage() {
     setLoading(true);
     try {
       const res = await zoneApi.getAll();
-      setZones(res.data);
+      setZones(res.data || []);
     } catch (err) {
       console.error('Failed to load zones:', err);
     } finally {
@@ -73,67 +73,87 @@ export default function ZonesPage() {
   };
 
   return (
-    <div className="animate-fade-in max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+    <div className="animate-fade-in max-w-6xl mx-auto pb-16 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="section-title text-3xl">Zone & Pincode Management</h1>
-          <p className="text-surface-500 mt-1">Configure delivery regions and assign service pincodes</p>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>🗺️</span> Zone & Pincode Management
+          </h1>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Configure operational delivery regions and map service postal PIN codes
+          </p>
         </div>
-        <button onClick={() => { setShowZoneModal(true); setError(''); }} className="btn-primary">
+        <button
+          onClick={() => {
+            setShowZoneModal(true);
+            setError('');
+          }}
+          className="btn-primary text-xs font-bold shadow-sm cursor-pointer"
+        >
           + Add New Zone
         </button>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <span className="w-8 h-8 border-3 border-brand-500/30 border-t-brand-500 rounded-full animate-spin" />
+          <span className="w-8 h-8 border-3 border-[#5046e4]/30 border-t-[#5046e4] rounded-full animate-spin" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {zones.map((zone) => (
-            <div key={zone.id} className="glass-card p-6 flex flex-col justify-between">
+            <div
+              key={zone.id}
+              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-start justify-between gap-4 mb-3">
+                <div className="flex items-start justify-between gap-4 mb-3 pb-3 border-b border-slate-100">
                   <div>
-                    <h3 className="text-xl font-bold text-surface-100 flex items-center gap-2">
+                    <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                       <span>🗺️</span> {zone.name}
                     </h3>
-                    <p className="text-xs text-surface-400 mt-1">{zone.description || 'No description'}</p>
+                    <p className="text-2xs text-slate-500 font-medium mt-0.5">{zone.description}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteZone(zone.id, zone.name)}
-                    className="text-red-400 hover:text-red-300 text-xs p-1"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                     title="Delete Zone"
                   >
                     🗑️
                   </button>
                 </div>
 
-                <div className="mt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-surface-400">
-                      Mapped Pincodes ({zone.areaMappings?.length || 0})
+                {/* Mapped Pincodes */}
+                <div className="space-y-2 mt-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-3xs font-extrabold text-slate-400 uppercase tracking-wider">
+                      Mapped PIN Codes ({zone.areas?.length || 0})
                     </span>
                     <button
-                      onClick={() => { setShowAreaModal(zone.id); setError(''); }}
-                      className="text-xs text-brand-400 hover:text-brand-300 font-semibold"
+                      onClick={() => {
+                        setShowAreaModal(zone.id);
+                        setError('');
+                      }}
+                      className="text-xs font-bold text-[#5046e4] hover:text-[#4338ca] transition-colors cursor-pointer"
                     >
                       + Add Pincode
                     </button>
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2 rounded-xl bg-surface-900/60 border border-surface-700/30">
-                    {zone.areaMappings?.length > 0 ? (
-                      zone.areaMappings.map((m: any) => (
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 min-h-[90px] flex flex-wrap gap-2 items-start content-start">
+                    {zone.areas && zone.areas.length > 0 ? (
+                      zone.areas.map((a: any) => (
                         <span
-                          key={m.id}
-                          className="px-2.5 py-1 rounded-lg bg-surface-800 text-xs font-mono text-brand-300 border border-surface-700/50"
+                          key={a.id || a.areaIdentifier}
+                          className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-mono font-bold text-slate-800 shadow-2xs"
                         >
-                          {m.areaIdentifier}
+                          📮 {a.areaIdentifier}
                         </span>
                       ))
                     ) : (
-                      <span className="text-xs text-surface-500 italic p-2">No pincodes mapped yet</span>
+                      <p className="text-2xs text-slate-400 font-medium py-3 text-center w-full">
+                        No individual PIN codes pinned. Automatically serves regional state postal zones.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -145,36 +165,67 @@ export default function ZonesPage() {
 
       {/* Add Zone Modal */}
       {showZoneModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-card max-w-md w-full p-6 animate-scale-in">
-            <h3 className="text-xl font-bold text-surface-100 mb-4">Create New Delivery Zone</h3>
-            {error && <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm mb-4">{error}</div>}
-            <form onSubmit={handleCreateZone} className="space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 animate-scale-up text-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-extrabold text-slate-900">Add Operational Zone</h3>
+              <button
+                onClick={() => setShowZoneModal(false)}
+                className="text-slate-400 hover:text-slate-700 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {error && (
+              <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateZone} className="mt-4 space-y-4 text-xs">
               <div>
-                <label className="block text-sm font-medium text-surface-300 mb-1">Zone Name</label>
+                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Zone Name
+                </label>
                 <input
+                  type="text"
+                  placeholder="e.g. Central Zone"
                   value={zoneName}
                   onChange={(e) => setZoneName(e.target.value)}
-                  className="input-field"
-                  placeholder="e.g. Central Zone"
                   required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-surface-300 mb-1">Description</label>
+                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Description / States Covered
+                </label>
                 <input
+                  type="text"
+                  placeholder="e.g. Madhya Pradesh, Chhattisgarh"
                   value={zoneDesc}
                   onChange={(e) => setZoneDesc(e.target.value)}
-                  className="input-field"
-                  placeholder="e.g. MP, Chhattisgarh regions"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                 />
               </div>
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowZoneModal(false)} className="btn-secondary flex-1">
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowZoneModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={saving} className="btn-primary flex-1">
-                  {saving ? 'Creating...' : 'Save Zone'}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn-primary text-xs font-bold px-5 py-2 shadow-md cursor-pointer"
+                >
+                  {saving ? 'Creating...' : 'Create Zone'}
                 </button>
               </div>
             </form>
@@ -182,36 +233,55 @@ export default function ZonesPage() {
         </div>
       )}
 
-      {/* Add Area Pincode Modal */}
+      {/* Add Pincode Modal */}
       {showAreaModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-card max-w-md w-full p-6 animate-scale-in">
-            <h3 className="text-xl font-bold text-surface-100 mb-2">Map Pincode to Zone</h3>
-            <p className="text-xs text-surface-400 mb-4">Assign a 6-digit postal code to this regional distribution zone.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 animate-scale-up text-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-extrabold text-slate-900">Map Service Postal Pincode</h3>
+              <button
+                onClick={() => setShowAreaModal(null)}
+                className="text-slate-400 hover:text-slate-700 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
 
-            {error && <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm mb-4">{error}</div>}
-            
-            <form onSubmit={handleAddArea} className="space-y-4">
+            {error && (
+              <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleAddArea} className="mt-4 space-y-4 text-xs">
               <div>
-                <label className="block text-sm font-medium text-surface-300 mb-1">6-Digit Indian Pincode</label>
+                <label className="block text-2xs font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  6-Digit Postal PIN Code
+                </label>
                 <input
-                  value={pincode}
+                  type="text"
                   maxLength={6}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '');
-                    setPincode(val);
-                  }}
-                  className="input-field font-mono font-bold text-base"
-                  placeholder="e.g. 110001, 560001, 400001"
+                  placeholder="e.g. 462001"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
                   required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-mono font-bold text-base text-slate-900"
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowAreaModal(null)} className="btn-secondary flex-1">
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAreaModal(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={saving || pincode.length !== 6} className="btn-primary flex-1">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn-primary text-xs font-bold px-5 py-2 shadow-md cursor-pointer"
+                >
                   {saving ? 'Adding...' : 'Add Pincode'}
                 </button>
               </div>

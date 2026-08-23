@@ -21,7 +21,7 @@ export default function AdminOrdersManagement() {
     setLoading(true);
     try {
       const [ordersRes, agentsRes] = await Promise.all([
-        orderApi.getAll(),
+        orderApi.getAll({ all: 'true' }),
         agentApi.getAll().catch(() => ({ data: [] })),
       ]);
       setOrders(ordersRes.data || []);
@@ -230,12 +230,12 @@ export default function AdminOrdersManagement() {
                       <p className="text-3xs text-slate-400">{ord.pickupPincode} to {ord.dropPincode}</p>
                     </td>
                     <td className="py-4 px-6 font-mono text-2xs">
-                      <span className="font-bold text-slate-900">{ord.actualWeight}kg</span> /{' '}
-                      <span className="text-slate-500">{ord.volumetricWeight}kg vol</span>
+                      <span className="font-bold text-slate-900">{ord.actualWeight ?? ord.actualWeightKg ?? 1} kg</span> /{' '}
+                      <span className="text-slate-500">{ord.volumetricWeight ?? ord.volumetricWeightKg ?? 1} kg vol</span>
                     </td>
                     <td className="py-4 px-6 font-mono font-bold text-slate-900">
-                      {formatCurrency(ord.computedCharge)}
-                      <span className="block text-3xs font-sans text-slate-400 font-normal">{ord.paymentType} • {ord.orderType}</span>
+                      {formatCurrency(ord.computedCharge ?? ord.totalCharge ?? 0)}
+                      <span className="block text-3xs font-sans text-slate-400 font-normal">{ord.paymentType || 'PREPAID'} • {ord.orderType || 'B2C'}</span>
                     </td>
                     <td className="py-4 px-6">
                       {ord.assignedAgent ? (

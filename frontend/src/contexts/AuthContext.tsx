@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi } from '../api/endpoints';
+import { authService, UserProfile } from '../services/authService';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name: string;
   role: 'CUSTOMER' | 'AGENT' | 'ADMIN';
   phone?: string;
+  walletBalance?: number;
 }
 
 interface AuthContextType {
@@ -14,8 +15,18 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: { email: string; password: string; name: string; phone?: string }) => Promise<void>;
-  logout: () => void;
+  loginWithGoogle: (role?: 'CUSTOMER' | 'AGENT' | 'ADMIN') => Promise<void>;
+  register: (data: {
+    email: string;
+    password: string;
+    name: string;
+    phone?: string;
+    role?: 'CUSTOMER' | 'AGENT' | 'ADMIN';
+    vehicleType?: string;
+    vehicleNumber?: string;
+    zoneId?: string;
+  }) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,42 +37,103 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // 1. Instant hydration from localStorage
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+      try {
+        setToken(savedToken);
+        setUser(JSON.parse(savedUser));
+      } catch {
+        // ignore
+      }
     }
-    setIsLoading(false);
+
+    // 2. Realtime listener to Firebase Auth state
+    const unsubscribe = authService.onAuthStateChanged((profile) => {
+      if (profile) {
+        const u: User = {
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          role: profile.role,
+          phone: profile.phone,
+          walletBalance: profile.walletBalance,
+        };
+        setUser(u);
+        setToken('firebase-token');
+      } else {
+        // If not authenticated in Firebase Auth, keep local mock if present or clear
+        if (!savedUser) {
+          setUser(null);
+          setToken(null);
+        }
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await authApi.login({ email, password });
-    const { user: userData, token: newToken } = res.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+    const { user: profile, token: newToken } = await authService.login(email, password);
+    const u: User = {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+      phone: profile.phone,
+      walletBalance: profile.walletBalance,
+    };
+    setUser(u);
     setToken(newToken);
-    setUser(userData);
   };
 
-  const register = async (data: { email: string; password: string; name: string; phone?: string }) => {
-    const res = await authApi.register(data);
-    const { user: userData, token: newToken } = res.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const loginWithGoogle = async (defaultRole: 'CUSTOMER' | 'AGENT' | 'ADMIN' = 'CUSTOMER') => {
+    const { user: profile, token: newToken } = await authService.signInWithGoogle(defaultRole);
+    const u: User = {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+      phone: profile.phone,
+      walletBalance: profile.walletBalance,
+    };
+    setUser(u);
     setToken(newToken);
-    setUser(userData);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const register = async (data: {
+    email: string;
+    password: string;
+    name: string;
+    phone?: string;
+    role?: 'CUSTOMER' | 'AGENT' | 'ADMIN';
+    vehicleType?: string;
+    vehicleNumber?: string;
+    zoneId?: string;
+  }) => {
+    const { user: profile, token: newToken } = await authService.register(data);
+    const u: User = {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+      phone: profile.phone,
+      walletBalance: profile.walletBalance,
+    };
+    setUser(u);
+    setToken(newToken);
+  };
+
+  const logout = async () => {
+    await authService.logout();
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, loginWithGoogle, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
