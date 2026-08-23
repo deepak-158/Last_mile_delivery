@@ -4,6 +4,7 @@ import { db } from '../../config/firebase';
 import { notificationService, NotificationItem } from '../../services/notificationService';
 import { fcmService } from '../../services/fcmService';
 import { smsService } from '../../services/smsService';
+import { emailService } from '../../services/emailService';
 import { formatDate } from '../../utils/helpers';
 
 interface GroupedNotification {
@@ -22,11 +23,12 @@ export default function AdminNotificationsPage() {
   const [rawNotifications, setRawNotifications] = useState<NotificationItem[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<'ALL' | 'ORDER' | 'SYSTEM' | 'ADMIN'>('ALL');
 
   // Compose State
   const [showComposeModal, setShowComposeModal] = useState(false);
   const [targetType, setTargetType] = useState<'USER' | 'AGENT' | 'CUSTOMER' | 'ALL'>('USER');
-  const [dispatchChannel, setDispatchChannel] = useState<'PUSH_AND_IN_APP' | 'SMS_TWILIO' | 'OMNICHANNEL'>('PUSH_AND_IN_APP');
+  const [dispatchChannel, setDispatchChannel] = useState<'PUSH_AND_IN_APP' | 'SMS_TWILIO' | 'EMAIL_GMAIL' | 'OMNICHANNEL'>('PUSH_AND_IN_APP');
   const [selectedUserId, setSelectedUserId] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -127,8 +129,10 @@ export default function AdminNotificationsPage() {
           return;
         }
 
+        const targetUser = usersMap.get(selectedUserId);
+
         // 1. In-App / Push Notification
-        if (dispatchChannel !== 'SMS_TWILIO') {
+        if (dispatchChannel === 'PUSH_AND_IN_APP' || dispatchChannel === 'OMNICHANNEL') {
           await notificationService.sendNotification({
             userId: selectedUserId,
             subject,
@@ -140,21 +144,30 @@ export default function AdminNotificationsPage() {
 
         // 2. Twilio SMS
         if (dispatchChannel === 'SMS_TWILIO' || dispatchChannel === 'OMNICHANNEL') {
-          const targetUser = usersMap.get(selectedUserId);
           const targetPhone = targetUser?.phone || '';
           if (targetPhone) {
-            const smsRes = await smsService.sendSMS({
+            await smsService.sendSMS({
               to: targetPhone,
               body: `${subject}: ${body}`,
               type: 'CUSTOM',
             });
-            showMsg(`Dispatched via ${dispatchChannel} (${smsRes.message || 'Sent'}).`);
-          } else {
-            showMsg(`In-app notification sent. (User has no phone number on file for SMS).`);
           }
-        } else {
-          showMsg(`Targeted push alert sent successfully.`);
         }
+
+        // 3. Email Notification (Gmail Gateway)
+        if (dispatchChannel === 'EMAIL_GMAIL' || dispatchChannel === 'OMNICHANNEL') {
+          const targetEmail = targetUser?.email || '';
+          if (targetEmail) {
+            await emailService.sendEmail({
+              to: targetEmail,
+              subject,
+              htmlBody: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b;"><h2 style="color: #5046e4;">${subject}</h2><p style="font-size: 14px; line-height: 1.6;">${body}</p><hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" /><p style="font-size: 11px; color: #94a3b8;">Delivero Logistics Express Notification</p></div>`,
+              type: 'ADMIN_BROADCAST',
+            });
+          }
+        }
+
+        showMsg(`Dispatched successfully via ${dispatchChannel}.`);
       } else {
         // Broadcast
         const count = await notificationService.sendToRole(targetType, {
@@ -163,34 +176,46 @@ export default function AdminNotificationsPage() {
           type: 'ADMIN_BROADCAST',
         });
 
-        if (dispatchChannel === 'SMS_TWILIO' || dispatchChannel === 'OMNICHANNEL') {
-          // Send SMS to users with phone numbers
-          const targetUsers = users.filter((u) => {
-            const r = (u.role || 'CUSTOMER').toUpperCase();
-            if (targetType === 'ALL') return true;
-            if (targetType === 'CUSTOMER') return r === 'CUSTOMER' || r === 'USER';
-            if (targetType === 'AGENT') return r === 'AGENT';
-            return false;
-          });
+        // Filter target users for omnichannel delivery
+        const targetUsers = users.filter((u) => {
+          const r = (u.role || 'CUSTOMER').toUpperCase();
+          if (targetType === 'ALL') return true;
+          if (targetType === 'CUSTOMER') return r === 'CUSTOMER' || r === 'USER';
+          if (targetType === 'AGENT') return r === 'AGENT';
+          return false;
+        });
 
-          let smsCount = 0;
+        if (dispatchChannel === 'SMS_TWILIO' || dispatchChannel === 'OMNICHANNEL') {
           for (const u of targetUsers) {
             if (u.phone) {
               await smsService.sendSMS({
                 to: u.phone,
                 body: `${subject}: ${body}`,
                 type: 'CUSTOM',
-              });
-              smsCount++;
+              }).catch(() => {});
             }
           }
-          showMsg(`Broadcast dispatched via ${dispatchChannel} to ${count} app users & ${smsCount} SMS recipients.`);
-        } else {
-          showMsg(`Broadcast push sent successfully to ${count} active recipients.`);
         }
+
+        if (dispatchChannel === 'EMAIL_GMAIL' || dispatchChannel === 'OMNICHANNEL') {
+          for (const u of targetUsers) {
+            if (u.email) {
+              await emailService.sendEmail({
+                to: u.email,
+                subject,
+                htmlBody: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b;"><h2 style="color: #5046e4;">${subject}</h2><p style="font-size: 14px; line-height: 1.6;">${body}</p><hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" /><p style="font-size: 11px; color: #94a3b8;">Delivero Logistics Express Announcement</p></div>`,
+                type: 'ADMIN_BROADCAST',
+              }).catch(() => {});
+            }
+          }
+        }
+
+        showMsg(`Broadcast dispatched via ${dispatchChannel} to ${count} active accounts.`);
       }
 
       setShowComposeModal(false);
+      setSubject('');
+      setBody('');
       setSubject('');
       setBody('');
     } catch (err: any) {
@@ -426,7 +451,8 @@ export default function AdminNotificationsPage() {
                   >
                     <option value="PUSH_AND_IN_APP">🔔 Push & In-App (FCM)</option>
                     <option value="SMS_TWILIO">📱 SMS (Twilio Gateway)</option>
-                    <option value="OMNICHANNEL">🌐 Omnichannel (Both Push + SMS)</option>
+                    <option value="EMAIL_GMAIL">📧 Email (Gmail Gateway)</option>
+                    <option value="OMNICHANNEL">🌐 Omnichannel (Push + SMS + Email)</option>
                   </select>
                 </div>
               </div>

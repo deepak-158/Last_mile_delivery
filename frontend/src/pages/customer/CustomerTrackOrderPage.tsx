@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { orderApi } from '../../api/endpoints';
 import DeliveroMap from '../../components/DeliveroMap';
 import { formatCurrency, formatDate, STATUS_COLORS, STATUS_LABELS } from '../../utils/helpers';
+import { pdfReceiptGenerator } from '../../utils/pdfReceiptGenerator';
 
 export default function CustomerTrackOrderPage() {
   const [searchParams] = useSearchParams();
@@ -273,6 +274,26 @@ export default function CustomerTrackOrderPage() {
             ) : (
               <div className="delivero-card p-4 text-xs text-center text-slate-500">
                 🛵 Order is currently queued for automated courier dispatch in {order.pickupCity || 'Pickup Zone'}.
+              </div>
+            )}
+
+            {/* Delivered Tax Receipt Card */}
+            {order.status === 'DELIVERED' && (
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📄</span>
+                  <div>
+                    <h4 className="text-xs font-black text-emerald-900">Official Consignment Delivery Receipt</h4>
+                    <p className="text-3xs text-emerald-700 font-medium">Digital tax invoice with itemized freight breakdown and GST</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => pdfReceiptGenerator.downloadReceipt(order)}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  <span>⬇️</span> Download PDF Receipt
+                </button>
               </div>
             )}
 

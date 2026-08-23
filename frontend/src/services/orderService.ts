@@ -23,6 +23,7 @@ import { walletService } from './walletService';
 import { notificationService } from './notificationService';
 import { agentService } from './agentService';
 import { smsService } from './smsService';
+import { emailService } from './emailService';
 
 export interface OrderPreviewPayload {
   pickupPincode: string;
@@ -396,6 +397,11 @@ export const orderService = {
       if (customerPhone) {
         smsService.sendOrderBookedSMS(customerPhone, orderNumber, finalTotalCharge, assignedAgentName);
       }
+
+      // Send Order Booking Confirmation Email to Customer
+      if (user.email) {
+        emailService.sendOrderBookedEmail(user.email, { ...orderData, id: res.id, orderNumber }).catch(() => {});
+      }
     }
 
     // 2. Send targeted push notification & SMS ONLY to assigned Courier Agent
@@ -733,6 +739,19 @@ export const orderService = {
             );
           } else if (data.status === 'DELIVERED') {
             smsService.sendDeliveredSMS(customerPhone, order.orderNumber || id.slice(0, 8));
+          }
+        }
+
+        // Send Delivery Tax Invoice & Receipt Email to Customer
+        if (data.status === 'DELIVERED') {
+          try {
+            const customerUserDoc = await getDoc(doc(db, 'users', order.customerId));
+            const customerEmail = customerUserDoc.exists() ? customerUserDoc.data().email : '';
+            if (customerEmail) {
+              emailService.sendDeliveredReceiptEmail(customerEmail, { ...order, id, orderNumber: order.orderNumber || id.slice(0, 8) }).catch(() => {});
+            }
+          } catch {
+            // ignore
           }
         }
       }

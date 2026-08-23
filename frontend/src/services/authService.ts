@@ -8,15 +8,9 @@ import {
   onAuthStateChanged,
   User as FirebaseUser,
 } from 'firebase/auth';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  getDocs,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../config/firebase';
+import { emailService } from './emailService';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -259,6 +253,11 @@ export const authService = {
 
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(profile));
+
+    // Send Welcome Email to newly registered user/courier
+    if (data.email) {
+      emailService.sendWelcomeEmail(data.email, data.name, role).catch(() => {});
+    }
 
     return { user: profile, token };
   },
