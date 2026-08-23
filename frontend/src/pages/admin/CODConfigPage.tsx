@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { codConfigApi } from '../../api/endpoints';
+import { Banknote, CheckCircle2, AlertCircle, ShoppingBag, Building2, Save } from 'lucide-react';
 
 export default function CODConfigPage() {
   const [configs, setConfigs] = useState<any[]>([]);
@@ -54,7 +55,7 @@ export default function CODConfigPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <span>💵</span> Cash on Delivery (COD) Surcharge Controls
+          <Banknote className="w-6 h-6 text-[#5046e4]" /> Cash on Delivery (COD) Surcharge Controls
         </h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">
           Configure cash-handling fees and risk mitigation surcharges per business model
@@ -62,14 +63,14 @@ export default function CODConfigPage() {
       </div>
 
       {message && (
-        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold animate-slide-down">
-          ✅ {message}
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold animate-slide-down flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> {message}
         </div>
       )}
 
       {error && (
-        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold animate-slide-down">
-          ❌ {error}
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold animate-slide-down flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" /> {error}
         </div>
       )}
 
@@ -86,7 +87,9 @@ export default function CODConfigPage() {
               <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200/60">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">🛍️</span>
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+                      <ShoppingBag className="w-5 h-5" />
+                    </div>
                     <div>
                       <h3 className="font-black text-slate-900 text-sm">Retail B2C COD Surcharge</h3>
                       <p className="text-3xs text-slate-500 font-medium">Applied to consumer doorstep cash orders</p>
@@ -122,7 +125,9 @@ export default function CODConfigPage() {
               <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200/60">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">🏢</span>
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+                      <Building2 className="w-5 h-5" />
+                    </div>
                     <div>
                       <h3 className="font-black text-slate-900 text-sm">Enterprise B2B COD Surcharge</h3>
                       <p className="text-3xs text-slate-500 font-medium">Applied to commercial freight cash orders</p>
@@ -161,7 +166,7 @@ export default function CODConfigPage() {
                 disabled={saving}
                 className="btn-primary text-xs font-bold px-8 py-3 shadow-md flex items-center gap-2 cursor-pointer"
               >
-                <span>💾</span> {saving ? 'Deploying Rules...' : 'Save & Deploy COD Configuration'}
+                <Save className="w-4 h-4" /> {saving ? 'Deploying Rules...' : 'Save & Deploy COD Configuration'}
               </button>
             </div>
           </form>

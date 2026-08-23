@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { orderApi, agentApi } from '../../api/endpoints';
 import { formatCurrency } from '../../utils/helpers';
+import {
+  Plus,
+  MapPin,
+  CreditCard,
+  Banknote,
+  Bike,
+  Zap,
+  RotateCw,
+  ArrowRight,
+} from 'lucide-react';
 
 export default function AdminOrdersManagement() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -125,16 +135,16 @@ export default function AdminOrdersManagement() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link to="/customer/orders/new" className="btn-primary text-xs flex items-center gap-1.5 shadow-sm">
-            <span>+</span> Book New Consignment
+            <Plus className="w-4 h-4" /> Book New Consignment
           </Link>
-          <Link to="/admin/zones" className="btn-secondary text-xs">
-            🗺️ Zones
+          <Link to="/admin/zones" className="btn-secondary text-xs flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" /> Zones
           </Link>
-          <Link to="/admin/rate-cards" className="btn-secondary text-xs">
-            💳 Rate Cards
+          <Link to="/admin/rate-cards" className="btn-secondary text-xs flex items-center gap-1.5">
+            <CreditCard className="w-3.5 h-3.5" /> Rate Cards
           </Link>
-          <Link to="/admin/cod-config" className="btn-secondary text-xs">
-            💵 COD Config
+          <Link to="/admin/cod-config" className="btn-secondary text-xs flex items-center gap-1.5">
+            <Banknote className="w-3.5 h-3.5" /> COD Config
           </Link>
         </div>
       </div>
@@ -208,8 +218,8 @@ export default function AdminOrdersManagement() {
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
                     No orders found matching this filter.{' '}
-                    <Link to="/customer/orders/new" className="text-[#5046e4] font-bold hover:underline">
-                      Book a parcel delivery now →
+                    <Link to="/customer/orders/new" className="text-[#5046e4] font-bold hover:underline inline-flex items-center gap-0.5">
+                      Book a parcel delivery now <ArrowRight className="w-3 h-3" />
                     </Link>
                   </td>
                 </tr>
@@ -241,7 +251,7 @@ export default function AdminOrdersManagement() {
                       {ord.assignedAgent ? (
                         <div>
                           <p className="font-bold text-[#5046e4] flex items-center gap-1">
-                            <span>🛵</span> {ord.assignedAgent.user?.name || 'Courier'}
+                            <Bike className="w-3.5 h-3.5" /> {ord.assignedAgent.user?.name || 'Courier'}
                           </p>
                           <span className="text-3xs text-emerald-600 font-bold">Assigned</span>
                         </div>
@@ -259,10 +269,10 @@ export default function AdminOrdersManagement() {
                       {!ord.assignedAgent && ord.status !== 'DELIVERED' && ord.status !== 'FAILED' && (
                         <button
                           onClick={() => handleAutoAssign(ord.id)}
-                          className="px-2 py-1 rounded bg-[#5046e4]/10 hover:bg-[#5046e4]/20 text-[#5046e4] font-bold text-3xs transition-colors"
+                          className="px-2 py-1 rounded bg-[#5046e4]/10 hover:bg-[#5046e4]/20 text-[#5046e4] font-bold text-3xs transition-colors inline-flex items-center gap-1"
                           title="Auto assign nearest available agent"
                         >
-                          ⚡ Auto Assign
+                          <Zap className="w-3 h-3" /> Auto Assign
                         </button>
                       )}
 
@@ -294,8 +304,8 @@ export default function AdminOrdersManagement() {
         {/* Footer */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 text-xs text-slate-500">
           <span>Showing {filteredOrders.length} of {orders.length} real consignments</span>
-          <button onClick={fetchAllData} className="text-[#5046e4] font-bold hover:underline">
-            🔄 Refresh List
+          <button onClick={fetchAllData} className="text-[#5046e4] font-bold hover:underline inline-flex items-center gap-1">
+            <RotateCw className="w-3.5 h-3.5" /> Refresh List
           </button>
         </div>
       </div>
@@ -315,7 +325,7 @@ export default function AdminOrdersManagement() {
               <option value="">-- Choose an Available Agent --</option>
               {agents.map((ag) => (
                 <option key={ag.id} value={ag.id}>
-                  {ag.user?.name} {ag.isAvailable ? '🟢 (Available)' : '🔴 (Busy)'} - {ag.currentZone?.name || 'All Zones'}
+                  {ag.user?.name} {ag.isAvailable ? '(Available)' : '(Busy)'} - {ag.currentZone?.name || 'All Zones'}
                 </option>
               ))}
             </select>

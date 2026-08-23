@@ -12,6 +12,17 @@ import {
 } from '../../utils/helpers';
 import DeliveroMap from '../../components/DeliveroMap';
 import TaxInvoiceView from '../../components/TaxInvoiceView';
+import {
+  AlertTriangle,
+  Radio,
+  FileText,
+  Printer,
+  MapPin,
+  Flag,
+  Phone,
+  Bike,
+  Clock,
+} from 'lucide-react';
 
 export default function CustomerOrderDetailViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -48,7 +59,7 @@ export default function CustomerOrderDetailViewPage() {
   if (error || !order) {
     return (
       <div className="max-w-4xl mx-auto p-8 text-center delivero-card space-y-3">
-        <span className="text-3xl">⚠️</span>
+        <AlertTriangle className="w-10 h-10 text-amber-500 mx-auto" />
         <h3 className="text-base font-bold text-slate-900">Order Not Found</h3>
         <p className="text-xs text-slate-500">{error || 'The requested order could not be located.'}</p>
         <Link to="/customer/orders" className="btn-primary inline-block text-xs font-bold">
@@ -93,20 +104,20 @@ export default function CustomerOrderDetailViewPage() {
             <button
               type="button"
               onClick={() => setViewMode('tracking')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'tracking' ? 'bg-white text-[#5046e4] shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🛰️ Live Tracking
+              <Radio className="w-3.5 h-3.5" /> Live Tracking
             </button>
             <button
               type="button"
               onClick={() => setViewMode('invoice')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'invoice' ? 'bg-white text-[#5046e4] shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📄 Tax Invoice
+              <FileText className="w-3.5 h-3.5" /> Tax Invoice
             </button>
           </div>
 
@@ -114,7 +125,7 @@ export default function CustomerOrderDetailViewPage() {
             onClick={handlePrintInvoice}
             className="btn-secondary text-xs flex items-center gap-1.5 shadow-sm font-bold cursor-pointer"
           >
-            <span>🖨️</span> Print Invoice
+            <Printer className="w-3.5 h-3.5" /> Print Invoice
           </button>
         </div>
       </div>
@@ -129,23 +140,31 @@ export default function CustomerOrderDetailViewPage() {
             {/* Addresses Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
               <div>
-                <span className="text-3xs font-bold text-emerald-700 uppercase">📍 Pickup Origin</span>
+                <span className="text-3xs font-bold text-emerald-700 uppercase flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Pickup Origin
+                </span>
                 <p className="font-bold text-xs text-slate-900 mt-1">{order.senderName || 'Sender'}</p>
                 <p className="text-3xs text-slate-600 font-medium">{order.pickupAddress}</p>
                 <p className="text-3xs font-mono font-bold text-slate-700 mt-0.5">
                   {order.pickupPincode ? `PIN: ${order.pickupPincode}` : ''}
                 </p>
-                <p className="text-3xs text-slate-400 mt-0.5">📞 {order.senderPhone || 'Not provided'}</p>
+                <p className="text-3xs text-slate-400 mt-0.5 flex items-center gap-1">
+                  <Phone className="w-3 h-3 text-slate-400" /> {order.senderPhone || 'Not provided'}
+                </p>
               </div>
 
               <div>
-                <span className="text-3xs font-bold text-purple-700 uppercase">🏁 Drop Destination</span>
+                <span className="text-3xs font-bold text-purple-700 uppercase flex items-center gap-1">
+                  <Flag className="w-3 h-3" /> Drop Destination
+                </span>
                 <p className="font-bold text-xs text-slate-900 mt-1">{order.receiverName || 'Receiver'}</p>
                 <p className="text-3xs text-slate-600 font-medium">{order.dropAddress}</p>
                 <p className="text-3xs font-mono font-bold text-slate-700 mt-0.5">
                   {order.dropPincode ? `PIN: ${order.dropPincode}` : ''}
                 </p>
-                <p className="text-3xs text-slate-400 mt-0.5">📞 {order.receiverPhone || 'Not provided'}</p>
+                <p className="text-3xs text-slate-400 mt-0.5 flex items-center gap-1">
+                  <Phone className="w-3 h-3 text-slate-400" /> {order.receiverPhone || 'Not provided'}
+                </p>
               </div>
             </div>
 
@@ -154,7 +173,7 @@ export default function CustomerOrderDetailViewPage() {
               <div className="p-4 rounded-xl bg-indigo-50/70 border border-indigo-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#5046e4] text-white flex items-center justify-center font-bold text-sm">
-                    🛵
+                    <Bike className="w-5 h-5" />
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-slate-900">{order.assignedAgent.user?.name}</h4>
@@ -164,14 +183,15 @@ export default function CustomerOrderDetailViewPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <a href={`tel:${order.assignedAgent.user?.phone || ''}`} className="px-3 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs font-bold text-indigo-700 shadow-xs">
-                    📞 Call Courier
+                  <a href={`tel:${order.assignedAgent.user?.phone || ''}`} className="px-3 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs font-bold text-indigo-700 shadow-xs flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5" /> Call Courier
                   </a>
                 </div>
               </div>
             ) : (
-              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 font-semibold">
-                ⏳ Awaiting courier assignment. Automated dispatch engine is allocating the nearest available agent.
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 font-semibold flex items-center gap-2">
+                <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Awaiting courier assignment. Automated dispatch engine is allocating the nearest available agent.</span>
               </div>
             )}
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Gift, Copy, Check, Share2 } from 'lucide-react';
 
 export default function CustomerReferEarnPage() {
   const [copied, setCopied] = useState(false);
@@ -18,8 +19,8 @@ export default function CustomerReferEarnPage() {
       </div>
 
       <div className="delivero-card p-8 text-center space-y-6">
-        <div className="w-24 h-24 mx-auto rounded-3xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-5xl shadow-sm">
-          🎁
+        <div className="w-24 h-24 mx-auto rounded-3xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shadow-sm">
+          <Gift className="w-12 h-12" />
         </div>
 
         <div className="max-w-md mx-auto space-y-2">
@@ -40,9 +41,17 @@ export default function CustomerReferEarnPage() {
 
           <button
             onClick={handleCopy}
-            className="btn-primary py-2 px-4 text-xs font-bold shadow-sm"
+            className="btn-primary py-2 px-4 text-xs font-bold shadow-sm flex items-center gap-1.5"
           >
-            {copied ? '✓ Copied!' : 'Copy Code'}
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5" /> Copied!
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5" /> Copy Code
+              </>
+            )}
           </button>
         </div>
 
@@ -60,9 +69,9 @@ export default function CustomerReferEarnPage() {
                 handleCopy();
               }
             }}
-            className="btn-primary px-8 py-3 font-bold text-xs shadow-md"
+            className="btn-primary px-8 py-3 font-bold text-xs shadow-md flex items-center gap-2"
           >
-            Share Code with Friends 🚀
+            <Share2 className="w-4 h-4" /> Share Code with Friends
           </button>
         </div>
       </div>

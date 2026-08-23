@@ -1,6 +1,33 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import {
+  LayoutDashboard,
+  Package,
+  Zap,
+  MapPin,
+  CreditCard,
+  Banknote,
+  Users,
+  Bike,
+  Radio,
+  TrendingUp,
+  BarChart3,
+  Scale,
+  ClipboardList,
+  Bell,
+  Settings,
+  LogOut,
+  Search,
+  Gift,
+  Wallet,
+  Tag,
+  User,
+  MessageSquare,
+  Sparkles,
+  X,
+  Menu,
+} from 'lucide-react';
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
@@ -36,47 +63,47 @@ export default function DashboardLayout() {
   };
 
   const adminNav = [
-    { label: 'Dashboard', path: '/admin/dashboard', icon: '📊' },
-    { label: 'Orders', path: '/admin/orders', icon: '📦' },
-    { label: 'Assignments', path: '/admin/assignments', icon: '⚡' },
-    { label: 'Zones & Areas', path: '/admin/zones', icon: '🗺️' },
-    { label: 'Rate Cards', path: '/admin/rate-cards', icon: '💳' },
-    { label: 'COD Config', path: '/admin/cod-config', icon: '💵' },
-    { label: 'Users', path: '/admin/users', icon: '👥' },
-    { label: 'Delivery Agents', path: '/admin/agents', icon: '🛵' },
-    { label: 'Live Tracking', path: '/admin/live-tracking', icon: '🛰️' },
-    { label: 'Earnings', path: '/admin/earnings', icon: '💰' },
-    { label: 'Reports', path: '/admin/reports', icon: '📈' },
-    { label: 'Disputes / Failed', path: '/admin/disputes', icon: '⚖️' },
-    { label: 'Activity Logs', path: '/admin/activity-logs', icon: '📋' },
-    { label: 'Notifications', path: '/admin/notifications', icon: '🔔' },
-    { label: 'Settings', path: '/admin/settings', icon: '⚙️' },
+    { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { label: 'Orders', path: '/admin/orders', icon: Package },
+    { label: 'Assignments', path: '/admin/assignments', icon: Zap },
+    { label: 'Zones & Areas', path: '/admin/zones', icon: MapPin },
+    { label: 'Rate Cards', path: '/admin/rate-cards', icon: CreditCard },
+    { label: 'COD Config', path: '/admin/cod-config', icon: Banknote },
+    { label: 'Users', path: '/admin/users', icon: Users },
+    { label: 'Delivery Agents', path: '/admin/agents', icon: Bike },
+    { label: 'Live Tracking', path: '/admin/live-tracking', icon: Radio },
+    { label: 'Earnings', path: '/admin/earnings', icon: TrendingUp },
+    { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
+    { label: 'Disputes / Failed', path: '/admin/disputes', icon: Scale },
+    { label: 'Activity Logs', path: '/admin/activity-logs', icon: ClipboardList },
+    { label: 'Notifications', path: '/admin/notifications', icon: Bell },
+    { label: 'Settings', path: '/admin/settings', icon: Settings },
   ];
 
   const agentNav = [
-    { label: 'Dashboard', path: '/agent/dashboard', icon: '📊' },
-    { label: 'Deliveries', path: '/agent/orders', icon: '🛵' },
-    { label: 'Delivery Flow', path: '/agent/delivery-flow', icon: '⚡' },
-    { label: 'Earnings', path: '/agent/earnings', icon: '💰' },
-    { label: 'Wallet', path: '/agent/wallet', icon: '👛' },
-    { label: 'Profile', path: '/agent/profile', icon: '👤' },
-    { label: 'Notifications', path: '/agent/notifications', icon: '🔔' },
-    { label: 'Help & Support', path: '/agent/support', icon: '💬' },
-    { label: 'Settings', path: '/agent/settings', icon: '⚙️' },
+    { label: 'Dashboard', path: '/agent/dashboard', icon: LayoutDashboard },
+    { label: 'Deliveries', path: '/agent/orders', icon: Bike },
+    { label: 'Delivery Flow', path: '/agent/delivery-flow', icon: Zap },
+    { label: 'Earnings', path: '/agent/earnings', icon: TrendingUp },
+    { label: 'Wallet', path: '/agent/wallet', icon: Wallet },
+    { label: 'Profile', path: '/agent/profile', icon: User },
+    { label: 'Notifications', path: '/agent/notifications', icon: Bell },
+    { label: 'Help & Support', path: '/agent/support', icon: MessageSquare },
+    { label: 'Settings', path: '/agent/settings', icon: Settings },
   ];
 
   const customerNav = [
-    { label: 'Dashboard', path: '/customer/home', icon: '📊' },
-    { label: 'Book Parcel', path: '/customer/orders/new', icon: '⚡' },
-    { label: 'My Orders', path: '/customer/orders', icon: '📦' },
-    { label: 'Track Order', path: '/customer/track', icon: '🛰️' },
-    { label: 'Saved Addresses', path: '/customer/addresses', icon: '📍' },
-    { label: 'Payment Methods', path: '/customer/payments', icon: '💳' },
-    { label: 'Wallet', path: '/customer/wallet', icon: '👛' },
-    { label: 'Offers', path: '/customer/offers', icon: '🏷️' },
-    { label: 'Refer & Earn', path: '/customer/refer', icon: '🎁' },
-    { label: 'Profile', path: '/customer/profile', icon: '👤' },
-    { label: 'Help & Support', path: '/customer/support', icon: '💬' },
+    { label: 'Dashboard', path: '/customer/home', icon: LayoutDashboard },
+    { label: 'Book Parcel', path: '/customer/orders/new', icon: Zap },
+    { label: 'My Orders', path: '/customer/orders', icon: Package },
+    { label: 'Track Order', path: '/customer/track', icon: Radio },
+    { label: 'Saved Addresses', path: '/customer/addresses', icon: MapPin },
+    { label: 'Payment Methods', path: '/customer/payments', icon: CreditCard },
+    { label: 'Wallet', path: '/customer/wallet', icon: Wallet },
+    { label: 'Offers', path: '/customer/offers', icon: Tag },
+    { label: 'Refer & Earn', path: '/customer/refer', icon: Gift },
+    { label: 'Profile', path: '/customer/profile', icon: User },
+    { label: 'Help & Support', path: '/customer/support', icon: MessageSquare },
   ];
 
   const navItems = isAdmin ? adminNav : isAgent ? agentNav : customerNav;
@@ -93,7 +120,7 @@ export default function DashboardLayout() {
         {/* Logo Header */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-[#1e2235]">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-lg shadow-[0_2px_10px_rgba(80,70,228,0.4)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
             <h1 className="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
@@ -140,6 +167,7 @@ export default function DashboardLayout() {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || (item.path !== '/' && item.path !== '/customer/home' && location.pathname.startsWith(item.path + '/'));
+            const Icon = item.icon;
             return (
               <Link
                 key={item.path}
@@ -147,7 +175,7 @@ export default function DashboardLayout() {
                 onClick={() => setSidebarOpen(false)}
                 className={isActive ? 'delivero-sidebar-item-active' : 'delivero-sidebar-item'}
               >
-                <span className="text-base">{item.icon}</span>
+                <Icon className="w-4 h-4 shrink-0" />
                 <span>{item.label}</span>
               </Link>
             );
@@ -157,8 +185,8 @@ export default function DashboardLayout() {
         {/* Customer Refer & Earn promo card in sidebar */}
         {isCustomer && (
           <div className="mx-3 mb-2 p-3 rounded-2xl bg-indigo-950/40 border border-indigo-500/20 text-center">
-            <span className="text-xl block">🎁</span>
-            <p className="text-2xs font-bold text-indigo-200 mt-1">Refer & Earn</p>
+            <Gift className="w-5 h-5 mx-auto text-indigo-400 mb-1" />
+            <p className="text-2xs font-bold text-indigo-200">Refer & Earn</p>
             <p className="text-3xs text-indigo-300">Invite friends & earn ₹100</p>
             <Link
               to="/customer/refer"
@@ -173,9 +201,9 @@ export default function DashboardLayout() {
         <div className="p-3 border-t border-[#1e2235]">
           <button
             onClick={handleLogout}
-            className="w-full delivero-sidebar-item text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer"
+            className="w-full delivero-sidebar-item text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer flex items-center gap-2.5"
           >
-            <span>🚪</span>
+            <LogOut className="w-4 h-4 shrink-0" />
             <span>Sign Out</span>
           </button>
         </div>
@@ -198,14 +226,12 @@ export default function DashboardLayout() {
               className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
               onClick={() => setSidebarOpen(true)}
             >
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Menu className="w-5 h-5" />
             </button>
 
             {/* Global Search Input with Enter handler */}
             <form onSubmit={handleSearchSubmit} className="relative hidden md:block">
-              <span className="absolute left-3 top-2.5 text-slate-400 text-xs">🔍</span>
+              <Search className="absolute left-3 top-2.5 text-slate-400 w-3.5 h-3.5" />
               <input
                 type="text"
                 value={searchQuery}
@@ -217,9 +243,9 @@ export default function DashboardLayout() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-2 text-3xs font-bold text-slate-400 hover:text-slate-600"
+                  className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600"
                 >
-                  ✕
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </form>
@@ -235,7 +261,7 @@ export default function DashboardLayout() {
               to={isAdmin ? '/admin/notifications' : isAgent ? '/agent/notifications' : '/customer/notifications'}
               className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 relative"
             >
-              <span>🔔</span>
+              <Bell className="w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" />
             </Link>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { orderApi } from '../../api/endpoints';
 import { formatCurrency, formatDate } from '../../utils/helpers';
+import { ArrowDownLeft, Building2 } from 'lucide-react';
 
 export default function AgentWalletPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -67,8 +68,8 @@ export default function AgentWalletPage() {
               return (
                 <div key={ord.id} className="py-3.5 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                      ↓
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <ArrowDownLeft className="w-4 h-4" />
                     </div>
                     <div>
                       <p className="font-bold text-slate-900">Order #{ord.id.slice(0, 8).toUpperCase()}</p>
@@ -92,7 +93,9 @@ export default function AgentWalletPage() {
       {showWithdraw && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="delivero-card max-w-sm w-full p-6 text-center animate-scale-in space-y-4">
-            <span className="text-3xl block">🏦</span>
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] mx-auto flex items-center justify-center">
+              <Building2 className="w-6 h-6" />
+            </div>
             <h3 className="text-base font-extrabold text-slate-900">Instant Bank Transfer</h3>
             <p className="text-xs text-slate-500">Transfer available wallet balance to linked Bank Account</p>
 
@@ -106,7 +109,7 @@ export default function AgentWalletPage() {
               </button>
               <button
                 onClick={() => {
-                  alert('🎉 Withdrawal request initiated! Funds will reflect in your account.');
+                  alert('Withdrawal request initiated! Funds will reflect in your account.');
                   setShowWithdraw(false);
                 }}
                 className="btn-primary flex-1 font-bold"

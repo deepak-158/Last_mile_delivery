@@ -7,6 +7,13 @@ import {
   getOrderOrigin,
   getOrderDestination,
 } from '../../utils/helpers';
+import {
+  Wallet,
+  CreditCard,
+  ArrowDownLeft,
+  ArrowUpRight,
+  Plus,
+} from 'lucide-react';
 
 export default function CustomerWalletPage() {
   const [balance, setBalance] = useState<number>(5000.0);
@@ -73,7 +80,7 @@ export default function CustomerWalletPage() {
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto pb-16">
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <span>💳</span> Customer Wallet & 1-Click Credits
+          <Wallet className="w-6 h-6 text-[#5046e4]" /> Customer Wallet & 1-Click Credits
         </h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">
           Manage express checkout credits, prepaid deductions, and ledger history
@@ -106,9 +113,9 @@ export default function CustomerWalletPage() {
 
         <button
           onClick={() => setShowAddMoney(true)}
-          className="px-6 py-3 rounded-xl bg-white text-[#5046e4] font-extrabold text-xs hover:bg-indigo-50 shadow-md whitespace-nowrap cursor-pointer transition-all"
+          className="px-6 py-3 rounded-xl bg-white text-[#5046e4] font-extrabold text-xs hover:bg-indigo-50 shadow-md whitespace-nowrap cursor-pointer transition-all flex items-center gap-1.5"
         >
-          + Add Money (Instant Top-up)
+          <Plus className="w-4 h-4" /> Add Money (Instant Top-up)
         </button>
       </div>
 
@@ -140,7 +147,11 @@ export default function CustomerWalletPage() {
                         : 'bg-rose-50 text-rose-600 border border-rose-200'
                     }`}
                   >
-                    {tx.type === 'CREDIT' ? '↓' : '↑'}
+                    {tx.type === 'CREDIT' ? (
+                      <ArrowDownLeft className="w-4 h-4" />
+                    ) : (
+                      <ArrowUpRight className="w-4 h-4" />
+                    )}
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">{tx.description}</p>
@@ -171,7 +182,7 @@ export default function CustomerWalletPage() {
                   <div key={ord.id} className="py-3.5 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center font-bold text-xs">
-                        ↑
+                        <ArrowUpRight className="w-4 h-4" />
                       </div>
                       <div>
                         <p className="font-bold text-slate-900">Prepaid Order #{ord.id.slice(0, 8).toUpperCase()}</p>
@@ -195,7 +206,9 @@ export default function CustomerWalletPage() {
       {showAddMoney && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="delivero-card max-w-sm w-full p-6 text-center animate-scale-in space-y-4 shadow-2xl border border-slate-200">
-            <span className="text-3xl block">💳</span>
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] mx-auto flex items-center justify-center">
+              <CreditCard className="w-6 h-6" />
+            </div>
             <h3 className="text-base font-black text-slate-900">Add Money to Delivero Wallet</h3>
             <p className="text-xs text-slate-500 font-medium">
               Instant digital balance for 1-click booking without payment gateway redirects.

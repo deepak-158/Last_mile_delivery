@@ -1,4 +1,5 @@
 import React from 'react';
+import { Package, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 interface Package3DVisualizerProps {
   lengthCm: number;
@@ -32,7 +33,7 @@ export default function Package3DVisualizer({
       <div className="flex items-center justify-between">
         <div>
           <h4 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-            <span className="text-[#5046e4]">📦</span> 3D Package Volumetric Visualizer
+            <Package className="w-4 h-4 text-[#5046e4]" /> 3D Package Volumetric Visualizer
           </h4>
           <p className="text-3xs text-slate-500 font-medium">Real-time $(L \times B \times H)/5000$ volumetric density calculation</p>
         </div>
@@ -128,8 +129,16 @@ export default function Package3DVisualizer({
               <p className="text-3xs font-extrabold uppercase tracking-wider">Billable Applied Weight (Max)</p>
               <p className="text-base font-black">{billableWeightKg || 0} kg</p>
             </div>
-            <span className="text-3xs font-extrabold px-2.5 py-1 rounded-full uppercase bg-white border border-current">
-              {isVolumetricHeavier ? '⚠️ Volumetric Applied' : '✅ Actual Applied'}
+            <span className="text-3xs font-extrabold px-2.5 py-1 rounded-full uppercase bg-white border border-current inline-flex items-center gap-1">
+              {isVolumetricHeavier ? (
+                <>
+                  <AlertTriangle className="w-3 h-3 text-amber-600" /> Volumetric Applied
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Actual Applied
+                </>
+              )}
             </span>
           </div>
         </div>

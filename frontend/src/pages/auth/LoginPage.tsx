@@ -4,6 +4,18 @@ import { useAuth } from '../../contexts/AuthContext';
 import { seedService } from '../../services/seedService';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
 import GoogleOnboardingModal from '../../components/GoogleOnboardingModal';
+import {
+  Radio,
+  ShieldCheck,
+  Zap,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Database,
+  Key,
+  Sparkles,
+} from 'lucide-react';
 
 export default function LoginPage() {
   const [selectedRole, setSelectedRole] = useState<'Customer' | 'Delivery Agent' | 'Admin'>('Customer');
@@ -74,7 +86,7 @@ export default function LoginPage() {
       <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-2">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-base shadow-[0_2px_10px_rgba(80,70,228,0.35)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-extrabold text-slate-900 tracking-tight">Delivero</span>
         </Link>
@@ -97,8 +109,8 @@ export default function LoginPage() {
           {/* 3 Value Bullets */}
           <div className="space-y-3.5 pt-2">
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                🛰️
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <Radio className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Real-time Tracking</h4>
@@ -107,8 +119,8 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                🛡️
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Secure & Reliable</h4>
@@ -117,8 +129,8 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                ⚡
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Fast & On-time</h4>
@@ -131,7 +143,7 @@ export default function LoginPage() {
           <DeliveroAuthTruckIllustration />
 
           <div className="flex items-center gap-2 text-2xs font-semibold text-slate-500">
-            <span>🛡️</span>
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Your data is 100% secure with us</span>
           </div>
         </div>
@@ -140,8 +152,8 @@ export default function LoginPage() {
         <div className="lg:col-span-5">
           <div className="delivero-card p-7 sm:p-9 shadow-[0_8px_30px_rgba(0,0,0,0.04)] space-y-6">
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                Welcome Back 👋
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                Welcome Back
               </h2>
               <p className="text-xs text-slate-500 mt-1 font-medium">
                 Login to your Delivero account
@@ -179,7 +191,7 @@ export default function LoginPage() {
                   Email or Phone Number
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 text-xs">✉️</span>
+                  <Mail className="absolute left-3.5 top-2.5 text-slate-400 w-4 h-4" />
                   <input
                     type="text"
                     required
@@ -196,7 +208,7 @@ export default function LoginPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 text-xs">🔒</span>
+                  <Lock className="absolute left-3.5 top-2.5 text-slate-400 w-4 h-4" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
@@ -208,9 +220,9 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs"
+                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
                   >
-                    {showPassword ? '🙈' : '👁️'}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -299,8 +311,7 @@ export default function LoginPage() {
                   onClick={() => handleRoleChange('Customer')}
                   className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-2xs font-bold text-slate-700 flex items-center justify-center gap-2 transition-colors"
                 >
-                  <span className="text-sm"></span>
-                  <span>Apple</span>
+                  <span className="text-sm font-bold">Apple</span>
                 </button>
               </div>
             </div>
@@ -322,14 +333,14 @@ export default function LoginPage() {
                   const res = await seedService.initializeDemoData();
                   setLoading(false);
                   if (res.success) {
-                    alert('✅ Firebase demo data (Zones, Rate Cards, Demo Accounts) initialized successfully!');
+                    alert('Firebase demo data (Zones, Rate Cards, Demo Accounts) initialized successfully!');
                   } else {
                     setError(res.message);
                   }
                 }}
                 className="inline-flex items-center gap-1.5 text-2xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors"
               >
-                <span>🌱</span>
+                <Database className="w-3.5 h-3.5" />
                 <span>Initialize Firebase Demo Data</span>
               </button>
             </div>
@@ -355,7 +366,9 @@ export default function LoginPage() {
       {showForgotModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="delivero-card max-w-sm w-full p-6 text-center animate-scale-in space-y-3">
-            <span className="text-3xl block">🔑</span>
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] mx-auto flex items-center justify-center">
+              <Key className="w-6 h-6" />
+            </div>
             <h3 className="text-base font-extrabold text-slate-900">Reset Password</h3>
             <p className="text-xs text-slate-500">
               Demo passwords for all seeded roles are set to <span className="font-mono font-bold text-[#5046e4]">password123</span>

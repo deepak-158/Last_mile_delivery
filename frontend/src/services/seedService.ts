@@ -151,7 +151,7 @@ export const seedService = {
         {
           id: 'addr-home',
           userId: 'demo-customer-uid',
-          label: '🏠 Home / Residence',
+          label: 'Home / Residence',
           contactName: 'Rohan Mehta',
           contactPhone: '+91 98765 43210',
           pincode: '110001',
@@ -163,7 +163,7 @@ export const seedService = {
         {
           id: 'addr-office',
           userId: 'demo-customer-uid',
-          label: '🏢 Corporate Office',
+          label: 'Corporate Office',
           contactName: 'Rohan Mehta (Admin Desk)',
           contactPhone: '+91 98765 43210',
           pincode: '122002',
@@ -175,7 +175,7 @@ export const seedService = {
         {
           id: 'addr-warehouse',
           userId: 'demo-customer-uid',
-          label: '📦 Bangalore Regional Warehouse',
+          label: 'Bangalore Regional Warehouse',
           contactName: 'Karthik Raman (Warehouse Manager)',
           contactPhone: '+91 91234 56789',
           pincode: '560034',

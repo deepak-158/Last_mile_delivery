@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, UserProfile } from '../services/authService';
+import { Package, Bike, Shield, Info, ArrowRight } from 'lucide-react';
 
 interface GoogleOnboardingModalProps {
   user: UserProfile;
@@ -51,7 +52,7 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
       onComplete(updatedProfile);
 
       if (role === 'AGENT') {
-        alert('🎉 Welcome to Delivero! Your Delivery Agent application has been submitted for Admin approval. You will receive active delivery jobs once verified.');
+        alert('Welcome to Delivero! Your Delivery Agent application has been submitted for Admin approval. You will receive active delivery jobs once verified.');
         navigate('/agent/dashboard');
       } else {
         navigate('/customer/home');
@@ -107,7 +108,7 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
                     : 'border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                <span className="text-xl block mb-1">📦</span>
+                <Package className="w-6 h-6 text-[#5046e4] mb-1.5" />
                 <span className="text-xs font-black text-slate-900 block">Customer</span>
                 <span className="text-3xs text-slate-500 font-medium">Send & track parcel deliveries</span>
               </button>
@@ -121,7 +122,7 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
                     : 'border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                <span className="text-xl block mb-1">🛵</span>
+                <Bike className="w-6 h-6 text-[#5046e4] mb-1.5" />
                 <span className="text-xs font-black text-slate-900 block">Delivery Agent</span>
                 <span className="text-3xs text-slate-500 font-medium">Deliver orders & earn per trip</span>
               </button>
@@ -162,7 +163,7 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
           {role === 'AGENT' && (
             <div className="space-y-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-200 animate-fade-in">
               <div className="flex items-center gap-2 text-2xs font-black uppercase tracking-wider text-slate-700">
-                <span>🛡️</span> Vehicle & Dispatch Verification
+                <Shield className="w-4 h-4 text-indigo-600" /> Vehicle & Dispatch Verification
               </div>
 
               <div>
@@ -172,10 +173,10 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
                   onChange={(e) => setVehicleType(e.target.value)}
                   className="delivero-input text-xs bg-white"
                 >
-                  <option value="Two Wheeler / Motorcycle">🏍️ Two Wheeler / Motorcycle</option>
-                  <option value="Electric Bike / EV Scooter">⚡ Electric Bike / EV Scooter</option>
-                  <option value="Three Wheeler / Auto Cargo">🛺 Three Wheeler / Auto Cargo</option>
-                  <option value="Four Wheeler / Mini Van">🚐 Four Wheeler / Mini Van</option>
+                  <option value="Two Wheeler / Motorcycle">Two Wheeler / Motorcycle</option>
+                  <option value="Electric Bike / EV Scooter">Electric Bike / EV Scooter</option>
+                  <option value="Three Wheeler / Auto Cargo">Three Wheeler / Auto Cargo</option>
+                  <option value="Four Wheeler / Mini Van">Four Wheeler / Mini Van</option>
                 </select>
               </div>
 
@@ -207,8 +208,9 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
                 </select>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-3xs font-medium leading-relaxed">
-                ℹ️ <strong>Note:</strong> New delivery courier accounts require Admin verification before active delivery assignments are dispatched to you.
+              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-3xs font-medium leading-relaxed flex items-start gap-1.5">
+                <Info className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                <span><strong>Note:</strong> New delivery courier accounts require Admin verification before active delivery assignments are dispatched to you.</span>
               </div>
             </div>
           )}
@@ -242,9 +244,13 @@ export default function GoogleOnboardingModal({ user, onComplete, onCancel }: Go
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3 text-xs font-bold shadow-md mt-4"
+            className="btn-primary w-full py-3 text-xs font-bold shadow-md mt-4 flex items-center justify-center gap-1.5"
           >
-            {loading ? 'Setting up Profile...' : 'Complete & Launch Delivero 🚀'}
+            {loading ? 'Setting up Profile...' : (
+              <>
+                Complete & Launch Delivero <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
       </div>

@@ -4,6 +4,17 @@ import { orderApi } from '../../api/endpoints';
 import { useAuth } from '../../contexts/AuthContext';
 import DeliveroMap from '../../components/DeliveroMap';
 import { formatCurrency, STATUS_COLORS, STATUS_LABELS } from '../../utils/helpers';
+import {
+  Package,
+  Truck,
+  Bike,
+  CheckCircle2,
+  XCircle,
+  Zap,
+  Search,
+  ArrowRight,
+  Sparkles,
+} from 'lucide-react';
 
 export default function CustomerHomePage() {
   const { user } = useAuth();
@@ -49,7 +60,7 @@ export default function CustomerHomePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            Welcome back, {user?.name || 'Customer'}! 👋
+            Welcome back, {user?.name || 'Customer'}! <Sparkles className="w-5 h-5 text-indigo-500" />
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Track your parcel consignments, book pickups, and manage deliveries.
@@ -57,7 +68,7 @@ export default function CustomerHomePage() {
         </div>
 
         <Link to="/customer/orders/new" className="btn-primary py-2.5 px-5 text-xs font-black shadow-md flex items-center gap-2">
-          <span>⚡</span> Book New Parcel
+          <Zap className="w-4 h-4" /> Book New Parcel
         </Link>
       </div>
 
@@ -66,10 +77,10 @@ export default function CustomerHomePage() {
         <Link to="/customer/orders" className="delivero-card p-4 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
             <span className="w-8 h-8 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-sm">
-              📦
+              <Package className="w-4 h-4" />
             </span>
-            <span className="text-3xs font-bold text-[#5046e4] group-hover:translate-x-0.5 transition-transform">
-              View all →
+            <span className="text-3xs font-bold text-[#5046e4] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              View all <ArrowRight className="w-3 h-3 inline" />
             </span>
           </div>
           <p className="text-2xl font-black text-slate-900 font-mono mt-2">{totalCount}</p>
@@ -79,10 +90,10 @@ export default function CustomerHomePage() {
         <Link to="/customer/orders" className="delivero-card p-4 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
             <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
-              🚚
+              <Truck className="w-4 h-4" />
             </span>
-            <span className="text-3xs font-bold text-amber-600 group-hover:translate-x-0.5 transition-transform">
-              Track now →
+            <span className="text-3xs font-bold text-amber-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              Track now <ArrowRight className="w-3 h-3 inline" />
             </span>
           </div>
           <p className="text-2xl font-black text-amber-600 font-mono mt-2">{inTransitCount}</p>
@@ -92,10 +103,10 @@ export default function CustomerHomePage() {
         <Link to="/customer/orders" className="delivero-card p-4 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
             <span className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm">
-              🛵
+              <Bike className="w-4 h-4" />
             </span>
-            <span className="text-3xs font-bold text-purple-600 group-hover:translate-x-0.5 transition-transform">
-              Track now →
+            <span className="text-3xs font-bold text-purple-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              Track now <ArrowRight className="w-3 h-3 inline" />
             </span>
           </div>
           <p className="text-2xl font-black text-purple-600 font-mono mt-2">{outForDeliveryCount}</p>
@@ -105,10 +116,10 @@ export default function CustomerHomePage() {
         <Link to="/customer/orders" className="delivero-card p-4 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
             <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-              ✅
+              <CheckCircle2 className="w-4 h-4" />
             </span>
-            <span className="text-3xs font-bold text-emerald-600 group-hover:translate-x-0.5 transition-transform">
-              View all →
+            <span className="text-3xs font-bold text-emerald-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              View all <ArrowRight className="w-3 h-3 inline" />
             </span>
           </div>
           <p className="text-2xl font-black text-emerald-600 font-mono mt-2">{deliveredCount}</p>
@@ -118,10 +129,10 @@ export default function CustomerHomePage() {
         <Link to="/customer/orders" className="delivero-card p-4 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
             <span className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm">
-              ❌
+              <XCircle className="w-4 h-4" />
             </span>
-            <span className="text-3xs font-bold text-rose-600 group-hover:translate-x-0.5 transition-transform">
-              View all →
+            <span className="text-3xs font-bold text-rose-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              View all <ArrowRight className="w-3 h-3 inline" />
             </span>
           </div>
           <p className="text-2xl font-black text-rose-600 font-mono mt-2">{failedCount}</p>
@@ -142,7 +153,7 @@ export default function CustomerHomePage() {
 
             <form onSubmit={handleTrackSubmit} className="space-y-3">
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-slate-400 text-xs">🔍</span>
+                <Search className="absolute left-3.5 top-2.5 text-slate-400 w-4 h-4" />
                 <input
                   type="text"
                   value={trackInputId}
@@ -167,13 +178,13 @@ export default function CustomerHomePage() {
               <h4 className="text-sm font-black text-slate-900 leading-tight">
                 Reliable & secure parcel delivery right to your doorstep
               </h4>
-              <Link to="/customer/orders/new" className="text-xs font-bold text-[#5046e4] hover:underline inline-block pt-1">
-                Book Parcel Now →
+              <Link to="/customer/orders/new" className="text-xs font-bold text-[#5046e4] hover:underline inline-flex items-center gap-1 pt-1">
+                Book Parcel Now <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            <div className="w-20 h-20 rounded-2xl bg-[#5046e4]/10 flex items-center justify-center text-4xl shrink-0">
-              🛵
+            <div className="w-20 h-20 rounded-2xl bg-[#5046e4]/10 flex items-center justify-center text-[#5046e4] shrink-0">
+              <Bike className="w-10 h-10" />
             </div>
           </div>
         </div>
@@ -194,8 +205,8 @@ export default function CustomerHomePage() {
                   </h3>
                 </div>
 
-                <Link to={`/customer/orders/${activeOrder.id}`} className="text-xs font-bold text-[#5046e4] hover:underline">
-                  Full Details →
+                <Link to={`/customer/orders/${activeOrder.id}`} className="text-xs font-bold text-[#5046e4] hover:underline inline-flex items-center gap-1">
+                  Full Details <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
@@ -217,10 +228,10 @@ export default function CustomerHomePage() {
                     ● In Transit
                   </span>
                   <span className={activeOrder.status === 'OUT_FOR_DELIVERY' || activeOrder.status === 'DELIVERED' ? 'text-purple-600 font-extrabold' : 'text-slate-400'}>
-                    🛵 Out for Delivery
+                    Out for Delivery
                   </span>
                   <span className={activeOrder.status === 'DELIVERED' ? 'text-emerald-600 font-extrabold' : 'text-slate-400'}>
-                    ○ Delivered
+                    Delivered
                   </span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -235,13 +246,13 @@ export default function CustomerHomePage() {
             </div>
           ) : (
             <div className="delivero-card p-8 text-center space-y-3">
-              <span className="text-4xl block">📦</span>
+              <Package className="w-12 h-12 mx-auto text-slate-300 stroke-1" />
               <h4 className="font-extrabold text-sm text-slate-900">No Active Dispatches</h4>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 You do not have any active packages in transit right now. Book a new parcel delivery to get started!
               </p>
-              <Link to="/customer/orders/new" className="btn-primary inline-block text-xs font-bold shadow-sm mt-2">
-                ⚡ Book New Parcel
+              <Link to="/customer/orders/new" className="btn-primary inline-flex items-center gap-1.5 text-xs font-bold shadow-sm mt-2">
+                <Zap className="w-4 h-4" /> Book New Parcel
               </Link>
             </div>
           )}
@@ -250,8 +261,8 @@ export default function CustomerHomePage() {
           <div className="delivero-card p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-extrabold text-slate-900">Recent Consignments</h3>
-              <Link to="/customer/orders" className="text-xs font-bold text-[#5046e4] hover:underline">
-                View all →
+              <Link to="/customer/orders" className="text-xs font-bold text-[#5046e4] hover:underline inline-flex items-center gap-1">
+                View all <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
@@ -269,7 +280,7 @@ export default function CustomerHomePage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-slate-100 group-hover:bg-indigo-50 text-slate-600 group-hover:text-[#5046e4] flex items-center justify-center text-sm transition-colors">
-                        📦
+                        <Package className="w-4 h-4" />
                       </div>
                       <div>
                         <p className="text-xs font-bold text-slate-900">

@@ -21,14 +21,14 @@ export const STATUS_LABELS: Record<string, string> = {
 };
 
 export const STATUS_ICONS: Record<string, string> = {
-  PENDING: '📋',
-  PICKED_UP: '📦',
-  IN_TRANSIT: '🚚',
-  OUT_FOR_DELIVERY: '🏍️',
-  DELIVERED: '✅',
-  FAILED: '❌',
-  CANCELLED: '🚫',
-  RESCHEDULED: '🔄',
+  PENDING: 'clock',
+  PICKED_UP: 'package',
+  IN_TRANSIT: 'truck',
+  OUT_FOR_DELIVERY: 'bike',
+  DELIVERED: 'check-circle-2',
+  FAILED: 'x-circle',
+  CANCELLED: 'ban',
+  RESCHEDULED: 'rotate-cw',
 };
 
 export function formatDate(dateStr?: string | null): string {

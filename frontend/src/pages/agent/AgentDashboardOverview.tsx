@@ -4,6 +4,7 @@ import { orderApi, agentApi } from '../../api/endpoints';
 import { useAuth } from '../../contexts/AuthContext';
 import DeliveroMap from '../../components/DeliveroMap';
 import { formatCurrency, STATUS_COLORS, STATUS_LABELS } from '../../utils/helpers';
+import { Bike, Clock, MapPin, Flag, ArrowRight } from 'lucide-react';
 
 export default function AgentDashboardOverview() {
   const { user } = useAuth();
@@ -60,7 +61,7 @@ export default function AgentDashboardOverview() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            Good day, {user?.name || 'Courier Agent'} 👋
+            Good day, {user?.name || 'Courier Agent'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Zone: <span className="font-bold text-[#5046e4]">{agentProfile?.currentZone?.name || 'All Assigned Zones'}</span> • Dispatch Queue
@@ -83,8 +84,8 @@ export default function AgentDashboardOverview() {
             {agentProfile?.isVerified === false ? 'Awaiting Verification' : isAvailable ? 'Status: Online Dispatch' : 'Status: Offline'}
           </button>
 
-          <Link to="/agent/orders" className="btn-primary text-xs font-bold shadow-sm">
-            🛵 View Deliveries Queue ({totalAssigned})
+          <Link to="/agent/orders" className="btn-primary text-xs font-bold shadow-sm inline-flex items-center gap-1.5">
+            <Bike className="w-4 h-4" /> View Deliveries Queue ({totalAssigned})
           </Link>
         </div>
       </div>
@@ -93,7 +94,9 @@ export default function AgentDashboardOverview() {
       {agentProfile?.isVerified === false && (
         <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <span className="text-3xl p-2 rounded-xl bg-amber-100/80">⏳</span>
+            <div className="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-800 flex items-center justify-center">
+              <Clock className="w-5 h-5" />
+            </div>
             <div>
               <h3 className="text-sm font-extrabold text-amber-950">Courier Profile Awaiting Admin Verification</h3>
               <p className="text-xs text-amber-800 mt-0.5">
@@ -102,7 +105,7 @@ export default function AgentDashboardOverview() {
             </div>
           </div>
           <span className="px-3.5 py-1.5 rounded-full bg-amber-200/80 text-amber-950 text-3xs font-black uppercase tracking-wider shrink-0 border border-amber-300">
-            🟡 Pending Approval
+            Pending Approval
           </span>
         </div>
       )}
@@ -156,13 +159,17 @@ export default function AgentDashboardOverview() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                   <div>
-                    <span className="text-3xs font-bold text-emerald-700 uppercase">📍 Pickup Origin</span>
+                    <span className="text-3xs font-bold text-emerald-700 uppercase flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> Pickup Origin
+                    </span>
                     <p className="font-bold text-slate-900 mt-0.5">{activeOrder.pickupCity}</p>
                     <p className="text-3xs text-slate-500">{activeOrder.pickupAddress}</p>
                   </div>
 
                   <div>
-                    <span className="text-3xs font-bold text-purple-700 uppercase">🏁 Drop Destination</span>
+                    <span className="text-3xs font-bold text-purple-700 uppercase flex items-center gap-1">
+                      <Flag className="w-3 h-3" /> Drop Destination
+                    </span>
                     <p className="font-bold text-slate-900 mt-0.5">{activeOrder.dropCity}</p>
                     <p className="text-3xs text-slate-500">{activeOrder.dropAddress}</p>
                   </div>
@@ -178,14 +185,14 @@ export default function AgentDashboardOverview() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Link to="/agent/orders" className="btn-primary flex-1 py-3 text-center text-xs shadow-sm font-bold">
-                  Update Status & Complete Handover →
+                <Link to="/agent/orders" className="btn-primary flex-1 py-3 text-center text-xs shadow-sm font-bold flex items-center justify-center gap-1.5">
+                  Update Status & Complete Handover <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
           ) : (
             <div className="py-12 text-center text-slate-400 space-y-2">
-              <span className="text-3xl block">🛵</span>
+              <Bike className="w-10 h-10 text-slate-300 stroke-1 mx-auto" />
               <p className="text-xs font-bold text-slate-700">No Active Dispatches in Progress</p>
               <p className="text-3xs text-slate-400 max-w-xs mx-auto">
                 Toggle your status to Online to receive automatic dispatch assignments from administrators.
@@ -198,8 +205,8 @@ export default function AgentDashboardOverview() {
         <div className="lg:col-span-5 delivero-card p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="text-sm font-extrabold text-slate-900">Your Assigned Consignments</h3>
-            <Link to="/agent/orders" className="text-3xs font-bold text-[#5046e4] hover:underline">
-              View All ({orders.length}) →
+            <Link to="/agent/orders" className="text-3xs font-bold text-[#5046e4] hover:underline flex items-center gap-0.5">
+              View All ({orders.length}) <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 

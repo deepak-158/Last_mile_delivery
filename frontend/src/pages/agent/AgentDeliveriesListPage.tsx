@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { orderApi, agentApi } from '../../api/endpoints';
 import { formatCurrency } from '../../utils/helpers';
+import { Zap } from 'lucide-react';
 
 export default function AgentDeliveriesListPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -84,8 +85,8 @@ export default function AgentDeliveriesListPage() {
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">My Deliveries Queue</h1>
           <p className="text-xs text-slate-500 mt-0.5">Live dispatches assigned to your courier route</p>
         </div>
-        <Link to="/agent/delivery-flow" className="btn-primary text-xs shadow-sm font-bold">
-          ⚡ Open Visual Delivery Flow
+        <Link to="/agent/delivery-flow" className="btn-primary text-xs shadow-sm font-bold inline-flex items-center gap-1.5">
+          <Zap className="w-4 h-4" /> Open Visual Delivery Flow
         </Link>
       </div>
 

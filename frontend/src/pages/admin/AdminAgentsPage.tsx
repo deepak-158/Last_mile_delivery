@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { agentApi } from '../../api/endpoints';
+import { Truck, Clock, CheckCircle2, Check } from 'lucide-react';
 
 export default function AdminAgentsPage() {
   const [agents, setAgents] = useState<any[]>([]);
@@ -58,7 +59,9 @@ export default function AdminAgentsPage() {
             <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Total Couriers</span>
             <span className="text-2xl font-black text-slate-900 mt-0.5 block">{agents.length}</span>
           </div>
-          <span className="text-2xl p-3 rounded-2xl bg-indigo-50 text-[#5046e4]">🚚</span>
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] flex items-center justify-center">
+            <Truck className="w-6 h-6" />
+          </div>
         </div>
 
         <div className="delivero-card p-4 flex items-center justify-between border-amber-100 bg-amber-50/20">
@@ -66,7 +69,9 @@ export default function AdminAgentsPage() {
             <span className="text-2xs font-bold text-amber-700 uppercase tracking-wider block">Pending Approval</span>
             <span className="text-2xl font-black text-amber-600 mt-0.5 block">{pendingCount}</span>
           </div>
-          <span className="text-2xl p-3 rounded-2xl bg-amber-100 text-amber-600">⏳</span>
+          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <Clock className="w-6 h-6" />
+          </div>
         </div>
 
         <div className="delivero-card p-4 flex items-center justify-between">
@@ -74,7 +79,9 @@ export default function AdminAgentsPage() {
             <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Online & Ready</span>
             <span className="text-2xl font-black text-emerald-600 mt-0.5 block">{onlineCount}</span>
           </div>
-          <span className="text-2xl p-3 rounded-2xl bg-emerald-50 text-emerald-600">🟢</span>
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
         </div>
       </div>
 
@@ -132,11 +139,11 @@ export default function AdminAgentsPage() {
                       <td className="py-4 px-6">
                         {ag.isVerified === false ? (
                           <span className="px-2.5 py-1 rounded-full text-3xs font-extrabold bg-amber-100 text-amber-800 inline-flex items-center gap-1">
-                            <span>🟡</span> Pending Approval
+                            <Clock className="w-3 h-3 text-amber-600" /> Pending Approval
                           </span>
                         ) : (
                           <span className="px-2.5 py-1 rounded-full text-3xs font-extrabold bg-emerald-100 text-emerald-800 inline-flex items-center gap-1">
-                            <span>🟢</span> Verified Courier
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Verified Courier
                           </span>
                         )}
                       </td>
@@ -146,9 +153,9 @@ export default function AdminAgentsPage() {
                             <button
                               disabled={actionLoading === ag.id}
                               onClick={() => handleVerify(ag.id, true)}
-                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xs transition-colors shadow-sm"
+                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xs transition-colors shadow-sm inline-flex items-center gap-1"
                             >
-                              {actionLoading === ag.id ? 'Processing...' : '✓ Approve & Activate'}
+                              <Check className="w-3 h-3" /> {actionLoading === ag.id ? 'Processing...' : 'Approve & Activate'}
                             </button>
                             <button
                               disabled={actionLoading === ag.id}

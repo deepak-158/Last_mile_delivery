@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
+import { User, Zap, ShieldCheck, Mail, Sparkles } from 'lucide-react';
 
 export default function CustomerRegisterPage() {
   const [name, setName] = useState('');
@@ -56,12 +57,12 @@ export default function CustomerRegisterPage() {
       <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-2">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-base shadow-[0_2px_10px_rgba(80,70,228,0.35)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-extrabold text-slate-900 tracking-tight">Delivero</span>
         </Link>
-        <span className="px-3 py-1 bg-indigo-50 text-[#5046e4] font-bold text-xs rounded-xl">
-          👤 Customer Registration
+        <span className="px-3 py-1 bg-indigo-50 text-[#5046e4] font-bold text-xs rounded-xl flex items-center gap-1.5">
+          <User className="w-3.5 h-3.5" /> Customer Registration
         </span>
       </header>
 
@@ -80,7 +81,9 @@ export default function CustomerRegisterPage() {
 
           <div className="space-y-3 pt-2">
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-sm shrink-0">⚡</span>
+              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Real-time Tracking</h4>
                 <p className="text-2xs text-slate-500">Track your orders in real-time with live ETA</p>
@@ -88,7 +91,9 @@ export default function CustomerRegisterPage() {
             </div>
 
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-sm shrink-0">🛡️</span>
+              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Secure & Reliable</h4>
                 <p className="text-2xs text-slate-500">Your packages and payments are protected</p>
@@ -113,7 +118,7 @@ export default function CustomerRegisterPage() {
               <div>
                 <label className="block text-3xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 text-xs">👤</span>
+                  <User className="absolute left-3.5 top-2.5 text-slate-400 w-4 h-4" />
                   <input
                     type="text"
                     required
@@ -128,7 +133,7 @@ export default function CustomerRegisterPage() {
               <div>
                 <label className="block text-3xs font-bold uppercase text-slate-500 mb-1">Email Address</label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 text-xs">✉️</span>
+                  <Mail className="absolute left-3.5 top-2.5 text-slate-400 w-4 h-4" />
                   <input
                     type="email"
                     required
@@ -144,7 +149,7 @@ export default function CustomerRegisterPage() {
                 <label className="block text-3xs font-bold uppercase text-slate-500 mb-1">Phone Number</label>
                 <div className="flex gap-2">
                   <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shrink-0">
-                    🇮🇳 +91
+                    +91
                   </div>
                   <input
                     type="tel"

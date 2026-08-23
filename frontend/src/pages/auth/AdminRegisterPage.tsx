@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
+import { Shield, BarChart3, Users, Sparkles } from 'lucide-react';
 
 export default function AdminRegisterPage() {
   const [name, setName] = useState('');
@@ -56,12 +57,12 @@ export default function AdminRegisterPage() {
       <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-2">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-base shadow-[0_2px_10px_rgba(80,70,228,0.35)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-extrabold text-slate-900 tracking-tight">Delivero</span>
         </Link>
-        <span className="px-3 py-1 bg-amber-50 text-amber-700 font-bold text-xs rounded-xl">
-          🛡️ Admin Access Creation
+        <span className="px-3 py-1 bg-amber-50 text-amber-700 font-bold text-xs rounded-xl flex items-center gap-1.5">
+          <Shield className="w-3.5 h-3.5" /> Admin Access Creation
         </span>
       </header>
 
@@ -79,7 +80,9 @@ export default function AdminRegisterPage() {
 
           <div className="space-y-3 pt-2">
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm shrink-0">📊</span>
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <BarChart3 className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Complete Control</h4>
                 <p className="text-2xs text-slate-500">Configure zones, tariffs, and rate cards dynamically</p>
@@ -87,7 +90,9 @@ export default function AdminRegisterPage() {
             </div>
 
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm shrink-0">👥</span>
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">User & Fleet Management</h4>
                 <p className="text-2xs text-slate-500">Manage customers, couriers, and merchants</p>

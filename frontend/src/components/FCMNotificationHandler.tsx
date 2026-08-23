@@ -3,6 +3,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { fcmService, PushNotificationPayload, playNotificationChime } from '../services/fcmService';
 import { useAuth } from '../contexts/AuthContext';
+import { Bell, Volume2, Bike } from 'lucide-react';
 
 export default function FCMNotificationHandler() {
   const { user } = useAuth();
@@ -66,7 +67,7 @@ export default function FCMNotificationHandler() {
       setPermissionState(currentPerm);
 
       fcmService.triggerLocalAlert(
-        '🔔 Push & Audio Alerts Activated!',
+        'Push & Audio Alerts Activated!',
         'You will now receive live dispatch audio chimes and delivery status notifications in real time.'
       );
     } catch (err) {
@@ -78,7 +79,7 @@ export default function FCMNotificationHandler() {
 
   const handleTestChimeAndPush = () => {
     fcmService.triggerLocalAlert(
-      '⚡ Delivero Dispatch Alert (FCM Sound Test)',
+      'Delivero Dispatch Alert (FCM Sound Test)',
       'High-priority express parcel #LM839210 auto-dispatched to your delivery queue!'
     );
   };
@@ -89,7 +90,7 @@ export default function FCMNotificationHandler() {
       {user && permissionState === 'default' && !dismissedBanner && (
         <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white px-4 py-2.5 text-xs shadow-md flex items-center justify-between gap-4 z-40 border-b border-indigo-700">
           <div className="flex items-center gap-2 font-medium">
-            <span className="text-base animate-bounce">🔔</span>
+            <Bell className="w-4 h-4 text-amber-300 animate-bounce" />
             <span>
               <strong className="font-bold text-amber-300">Enable FCM Push & Audio Chimes:</strong> Get instant delivery sound alerts and real-time status updates!
             </span>
@@ -118,8 +119,8 @@ export default function FCMNotificationHandler() {
       {activeToast && (
         <div className="fixed top-5 right-5 z-50 max-w-sm w-full bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-indigo-500/40 animate-slide-down">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl shrink-0 border border-indigo-500/30">
-              🛵
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-500/30">
+              <Bike className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
@@ -152,7 +153,7 @@ export default function FCMNotificationHandler() {
           <div className="mb-3 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-slide-down text-slate-800">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100 mb-3">
               <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-                <span>🔔</span> FCM Live Push Alerts
+                <Bell className="w-4 h-4 text-[#5046e4]" /> FCM Live Push Alerts
               </span>
               <button
                 onClick={() => setShowBellMenu(false)}
@@ -170,7 +171,7 @@ export default function FCMNotificationHandler() {
                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                     : 'bg-amber-50 text-amber-700 border border-amber-200'
                 }`}>
-                  {permissionState === 'granted' ? '🟢 Active' : '🟡 Needs Permission'}
+                  {permissionState === 'granted' ? 'Active' : 'Needs Permission'}
                 </span>
               </div>
 
@@ -188,7 +189,7 @@ export default function FCMNotificationHandler() {
                 onClick={handleTestChimeAndPush}
                 className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>🔊</span> Play Audio Chime & Test Toast
+                <Volume2 className="w-4 h-4 text-slate-600" /> Play Audio Chime & Test Toast
               </button>
             </div>
           </div>
@@ -199,10 +200,10 @@ export default function FCMNotificationHandler() {
             setShowBellMenu(!showBellMenu);
             handleTestChimeAndPush();
           }}
-          className="w-12 h-12 rounded-full bg-[#5046e4] hover:bg-[#4338ca] text-white shadow-xl flex items-center justify-center text-xl transition-transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-white"
+          className="w-12 h-12 rounded-full bg-[#5046e4] hover:bg-[#4338ca] text-white shadow-xl flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-white"
           title="Click to Test Sound Chime & FCM Alert"
         >
-          🔔
+          <Bell className="w-5 h-5" />
         </button>
       </div>
     </>

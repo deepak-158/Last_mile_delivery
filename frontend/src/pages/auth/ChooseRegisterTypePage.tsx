@@ -1,6 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
+import {
+  User,
+  Bike,
+  Shield,
+  Radio,
+  ShieldCheck,
+  Zap,
+  Sparkles,
+  ArrowRight,
+} from 'lucide-react';
 
 export default function ChooseRegisterTypePage() {
   const roles = [
@@ -8,21 +18,21 @@ export default function ChooseRegisterTypePage() {
       title: 'I am a Customer',
       desc: 'Book orders, track deliveries and enjoy our services.',
       path: '/register/customer',
-      icon: '👤',
+      icon: User,
       color: 'bg-indigo-50 text-[#5046e4] border-indigo-100',
     },
     {
       title: 'I am a Delivery Agent',
       desc: 'Deliver orders and earn with Delivero.',
       path: '/register/agent',
-      icon: '🛵',
+      icon: Bike,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
     {
       title: 'I am an Admin',
       desc: 'Manage operations, users and all deliveries.',
       path: '/register/admin',
-      icon: '🛡️',
+      icon: Shield,
       color: 'bg-amber-50 text-amber-600 border-amber-100',
     },
   ];
@@ -33,7 +43,7 @@ export default function ChooseRegisterTypePage() {
       <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-2">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-base shadow-[0_2px_10px_rgba(80,70,228,0.35)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-extrabold text-slate-900 tracking-tight">Delivero</span>
         </Link>
@@ -55,8 +65,8 @@ export default function ChooseRegisterTypePage() {
 
           <div className="space-y-3.5 pt-2">
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                🛰️
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <Radio className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Real-time Tracking</h4>
@@ -65,8 +75,8 @@ export default function ChooseRegisterTypePage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                🛡️
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Secure & Reliable</h4>
@@ -75,8 +85,8 @@ export default function ChooseRegisterTypePage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-base shrink-0">
-                ⚡
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Fast & On-time</h4>
@@ -88,7 +98,7 @@ export default function ChooseRegisterTypePage() {
           <DeliveroAuthTruckIllustration />
 
           <div className="flex items-center gap-2 text-2xs font-semibold text-slate-500">
-            <span>🛡️</span>
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Your data is 100% secure with us</span>
           </div>
         </div>
@@ -106,28 +116,29 @@ export default function ChooseRegisterTypePage() {
             </div>
 
             <div className="space-y-3.5">
-              {roles.map((r) => (
-                <Link
-                  key={r.title}
-                  to={r.path}
-                  className="p-4 rounded-2xl border border-slate-200 hover:border-[#5046e4] hover:shadow-md transition-all flex items-center justify-between gap-4 group block bg-white"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xl shrink-0 border ${r.color}`}>
-                      {r.icon}
+              {roles.map((r) => {
+                const Icon = r.icon;
+                return (
+                  <Link
+                    key={r.title}
+                    to={r.path}
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#5046e4] hover:shadow-md transition-all flex items-center justify-between gap-4 group block bg-white"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${r.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 group-hover:text-[#5046e4] transition-colors">
+                          {r.title}
+                        </h4>
+                        <p className="text-3xs text-slate-500 mt-0.5">{r.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-xs text-slate-900 group-hover:text-[#5046e4] transition-colors">
-                        {r.title}
-                      </h4>
-                      <p className="text-3xs text-slate-500 mt-0.5">{r.desc}</p>
-                    </div>
-                  </div>
-                  <span className="text-slate-400 group-hover:text-[#5046e4] group-hover:translate-x-1 transition-all text-sm">
-                    →
-                  </span>
-                </Link>
-              ))}
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#5046e4] group-hover:translate-x-1 transition-all" />
+                  </Link>
+                );
+              })}
             </div>
 
             <div className="text-center pt-3 border-t border-slate-100">

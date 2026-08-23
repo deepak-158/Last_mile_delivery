@@ -4,6 +4,18 @@ import { orderApi } from '../../api/endpoints';
 import DeliveroMap from '../../components/DeliveroMap';
 import { formatCurrency, formatDate, STATUS_COLORS, STATUS_LABELS } from '../../utils/helpers';
 import { pdfReceiptGenerator } from '../../utils/pdfReceiptGenerator';
+import {
+  Search,
+  Zap,
+  Check,
+  Phone,
+  FileText,
+  Download,
+  MapPin,
+  Flag,
+  Bike,
+  PhoneCall,
+} from 'lucide-react';
 
 export default function CustomerTrackOrderPage() {
   const [searchParams] = useSearchParams();
@@ -135,13 +147,13 @@ export default function CustomerTrackOrderPage() {
         </div>
       ) : !order ? (
         <div className="delivero-card p-12 text-center space-y-3">
-          <span className="text-4xl block">🔍</span>
+          <Search className="w-12 h-12 mx-auto text-slate-300 stroke-1" />
           <h3 className="text-base font-extrabold text-slate-900">No Consignment Selected</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             You don't have any active orders recorded yet. Book your first parcel to track live delivery progression.
           </p>
-          <Link to="/customer/orders/new" className="btn-primary inline-block text-xs font-bold shadow-sm mt-2">
-            ⚡ Book New Delivery
+          <Link to="/customer/orders/new" className="btn-primary inline-flex items-center gap-1.5 text-xs font-bold shadow-sm mt-2">
+            <Zap className="w-4 h-4" /> Book New Delivery
           </Link>
         </div>
       ) : (
@@ -162,7 +174,7 @@ export default function CustomerTrackOrderPage() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-3xs font-bold shrink-0 ${
                   currentStep >= 1 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {currentStep >= 1 ? '✓' : '1'}
+                  {currentStep >= 1 ? <Check className="w-3.5 h-3.5" /> : '1'}
                 </span>
                 <div>
                   <p className="font-bold text-slate-900">Order Placed & Confirmed</p>
@@ -174,7 +186,7 @@ export default function CustomerTrackOrderPage() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-3xs font-bold shrink-0 ${
                   currentStep >= 2 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {currentStep >= 2 ? '✓' : '2'}
+                  {currentStep >= 2 ? <Check className="w-3.5 h-3.5" /> : '2'}
                 </span>
                 <div>
                   <p className="font-bold text-slate-900">Courier Assigned & Picked Up</p>
@@ -188,7 +200,7 @@ export default function CustomerTrackOrderPage() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-3xs font-bold shrink-0 ${
                   currentStep >= 3 ? 'bg-indigo-600 text-white animate-pulse' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {currentStep >= 3 ? '✓' : '3'}
+                  {currentStep >= 3 ? <Check className="w-3.5 h-3.5" /> : '3'}
                 </span>
                 <div>
                   <p className={`font-bold ${currentStep === 3 ? 'text-[#5046e4]' : 'text-slate-900'}`}>In Transit (Freight Route)</p>
@@ -200,7 +212,7 @@ export default function CustomerTrackOrderPage() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-3xs font-bold shrink-0 ${
                   currentStep >= 4 ? 'bg-purple-600 text-white animate-pulse' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {currentStep >= 4 ? '✓' : '4'}
+                  {currentStep >= 4 ? <Check className="w-3.5 h-3.5" /> : '4'}
                 </span>
                 <div>
                   <p className="font-bold text-slate-900">Out for Delivery</p>
@@ -212,7 +224,7 @@ export default function CustomerTrackOrderPage() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-3xs font-bold shrink-0 ${
                   currentStep === 5 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {currentStep === 5 ? '✓' : '5'}
+                  {currentStep === 5 ? <Check className="w-3.5 h-3.5" /> : '5'}
                 </span>
                 <div>
                   <p className="font-bold text-slate-700">Delivered & Fulfilled</p>
@@ -256,7 +268,9 @@ export default function CustomerTrackOrderPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className="font-extrabold text-sm text-slate-900">{order.assignedAgent.user?.name}</h4>
-                      <span className="text-3xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">🟢 Active Dispatch</span>
+                      <span className="text-3xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Active Dispatch
+                      </span>
                     </div>
                     <p className="text-3xs text-slate-400">Assigned Last-Mile Courier Partner</p>
                   </div>
@@ -267,13 +281,13 @@ export default function CustomerTrackOrderPage() {
                     onClick={() => setShowCall(true)}
                     className="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1.5"
                   >
-                    <span>📞</span> Call Courier
+                    <Phone className="w-3.5 h-3.5" /> Call Courier
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="delivero-card p-4 text-xs text-center text-slate-500">
-                🛵 Order is currently queued for automated courier dispatch in {order.pickupCity || 'Pickup Zone'}.
+              <div className="delivero-card p-4 text-xs text-center text-slate-500 flex items-center justify-center gap-2">
+                <Bike className="w-4 h-4 text-[#5046e4]" /> Order is currently queued for automated courier dispatch in {order.pickupCity || 'Pickup Zone'}.
               </div>
             )}
 
@@ -281,7 +295,7 @@ export default function CustomerTrackOrderPage() {
             {order.status === 'DELIVERED' && (
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">📄</span>
+                  <FileText className="w-6 h-6 text-emerald-600" />
                   <div>
                     <h4 className="text-xs font-black text-emerald-900">Official Consignment Delivery Receipt</h4>
                     <p className="text-3xs text-emerald-700 font-medium">Digital tax invoice with itemized freight breakdown and GST</p>
@@ -292,7 +306,7 @@ export default function CustomerTrackOrderPage() {
                   onClick={() => pdfReceiptGenerator.downloadReceipt(order)}
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5 shrink-0"
                 >
-                  <span>⬇️</span> Download PDF Receipt
+                  <Download className="w-3.5 h-3.5" /> Download PDF Receipt
                 </button>
               </div>
             )}
@@ -300,13 +314,17 @@ export default function CustomerTrackOrderPage() {
             {/* Origin and Destination Address Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="delivero-card p-4 text-xs space-y-1">
-                <span className="text-3xs font-bold uppercase text-emerald-700">📍 Pickup Origin</span>
+                <span className="text-3xs font-bold uppercase text-emerald-700 flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Pickup Origin
+                </span>
                 <p className="font-bold text-slate-900">{order.pickupCity} ({order.pickupPincode})</p>
                 <p className="text-3xs text-slate-500 font-medium">{order.pickupAddress}</p>
               </div>
 
               <div className="delivero-card p-4 text-xs space-y-1">
-                <span className="text-3xs font-bold uppercase text-purple-700">🏁 Drop Destination</span>
+                <span className="text-3xs font-bold uppercase text-purple-700 flex items-center gap-1">
+                  <Flag className="w-3 h-3" /> Drop Destination
+                </span>
                 <p className="font-bold text-slate-900">{order.dropCity} ({order.dropPincode})</p>
                 <p className="text-3xs text-slate-500 font-medium">{order.dropAddress}</p>
                 <p className="text-3xs text-slate-400 font-mono mt-1">Receiver: {order.receiverName} ({order.receiverPhone})</p>
@@ -320,7 +338,9 @@ export default function CustomerTrackOrderPage() {
       {showCall && order?.assignedAgent && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="delivero-card p-6 max-w-xs w-full text-center animate-scale-in space-y-3">
-            <span className="text-4xl block">📞</span>
+            <div className="w-12 h-12 rounded-full bg-indigo-50 text-[#5046e4] mx-auto flex items-center justify-center">
+              <PhoneCall className="w-6 h-6" />
+            </div>
             <h4 className="font-extrabold text-slate-900">Calling Courier Partner</h4>
             <p className="text-xs font-bold text-slate-800">{order.assignedAgent.user?.name}</p>
             <p className="text-xs text-[#5046e4] font-mono">{order.assignedAgent.user?.phone || '+91 9876543210'}</p>

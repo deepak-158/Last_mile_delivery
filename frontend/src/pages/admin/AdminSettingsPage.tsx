@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState('General');
@@ -29,8 +30,8 @@ export default function AdminSettingsPage() {
       </div>
 
       {saved && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold animate-slide-down">
-          ✅ Settings saved successfully across production clusters.
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold animate-slide-down flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Settings saved successfully across production clusters.
         </div>
       )}
 

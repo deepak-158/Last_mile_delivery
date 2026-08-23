@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { orderApi, agentApi } from '../../api/endpoints';
 import { formatCurrency } from '../../utils/helpers';
+import { Zap, Bike } from 'lucide-react';
 
 export default function AdminAssignmentsPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -96,7 +97,7 @@ export default function AdminAssignmentsPage() {
             onClick={handleBatchAutoAssign}
             className="btn-primary text-xs flex items-center gap-1.5 shadow-sm font-bold"
           >
-            <span>⚡</span> Batch Auto Assign All
+            <Zap className="w-3.5 h-3.5" /> Batch Auto Assign All
           </button>
         </div>
       </div>
@@ -189,7 +190,7 @@ export default function AdminAssignmentsPage() {
                     <td className="py-4 px-6">
                       {ord.assignedAgent ? (
                         <p className="font-bold text-[#5046e4] flex items-center gap-1">
-                          <span>🛵</span> {ord.assignedAgent.user?.name}
+                          <Bike className="w-3.5 h-3.5" /> {ord.assignedAgent.user?.name}
                         </p>
                       ) : (
                         <span className="badge badge-pending text-3xs">Unassigned</span>
@@ -198,9 +199,9 @@ export default function AdminAssignmentsPage() {
                     <td className="py-4 px-6 text-right space-x-2">
                       <button
                         onClick={() => handleAutoAssign(ord.id)}
-                        className="px-2.5 py-1 rounded bg-[#5046e4]/10 hover:bg-[#5046e4]/20 text-[#5046e4] font-bold text-3xs"
+                        className="px-2.5 py-1 rounded bg-[#5046e4]/10 hover:bg-[#5046e4]/20 text-[#5046e4] font-bold text-3xs inline-flex items-center gap-1"
                       >
-                        ⚡ Auto
+                        <Zap className="w-3 h-3" /> Auto
                       </button>
                       <button
                         onClick={() => setAssigningOrderId(ord.id)}
@@ -232,7 +233,7 @@ export default function AdminAssignmentsPage() {
               <option value="">-- Choose Courier Agent --</option>
               {agents.map((ag) => (
                 <option key={ag.id} value={ag.id}>
-                  {ag.user?.name} {ag.isAvailable ? '🟢 (Available)' : '🔴 (Busy)'} - {ag.currentZone?.name || 'All Zones'}
+                  {ag.user?.name} {ag.isAvailable ? '(Available)' : '(Busy)'} - {ag.currentZone?.name || 'All Zones'}
                 </option>
               ))}
             </select>

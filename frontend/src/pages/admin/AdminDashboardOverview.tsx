@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { orderApi, agentApi, zoneApi } from '../../api/endpoints';
 import { formatCurrency, STATUS_COLORS, STATUS_LABELS } from '../../utils/helpers';
+import {
+  Zap,
+  Radio,
+  Package,
+  CheckCircle2,
+  Truck,
+  XCircle,
+  DollarSign,
+  Clock,
+  Bike,
+  MapPin,
+  ArrowRight,
+} from 'lucide-react';
 
 export default function AdminDashboardOverview() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -53,10 +66,10 @@ export default function AdminDashboardOverview() {
         </div>
         <div className="flex items-center gap-2">
           <Link to="/admin/assignments" className="btn-secondary text-xs flex items-center gap-1.5 font-bold">
-            <span>⚡</span> Dispatch Assignments
+            <Zap className="w-3.5 h-3.5" /> Dispatch Assignments
           </Link>
           <Link to="/admin/live-tracking" className="btn-primary text-xs flex items-center gap-1.5 shadow-sm font-bold">
-            <span>🛰️</span> Live Map Tracking
+            <Radio className="w-3.5 h-3.5" /> Live Map Tracking
           </Link>
         </div>
       </div>
@@ -66,7 +79,7 @@ export default function AdminDashboardOverview() {
         <div className="delivero-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-2xs font-bold text-slate-500 uppercase tracking-wider">Total Consignments</span>
-            <span className="text-base">📦</span>
+            <Package className="w-4 h-4 text-indigo-600" />
           </div>
           <div className="mt-3">
             <p className="text-2xl font-extrabold text-slate-900 font-mono">{totalOrders}</p>
@@ -77,7 +90,7 @@ export default function AdminDashboardOverview() {
         <div className="delivero-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-2xs font-bold text-slate-500 uppercase tracking-wider">Delivered</span>
-            <span className="text-base">✅</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="mt-3">
             <p className="text-2xl font-extrabold text-emerald-600 font-mono">{deliveredOrders}</p>
@@ -90,7 +103,7 @@ export default function AdminDashboardOverview() {
         <div className="delivero-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-2xs font-bold text-slate-500 uppercase tracking-wider">In Transit</span>
-            <span className="text-base">🚚</span>
+            <Truck className="w-4 h-4 text-amber-600" />
           </div>
           <div className="mt-3">
             <p className="text-2xl font-extrabold text-amber-600 font-mono">{inTransitOrders + outForDeliveryOrders}</p>
@@ -101,7 +114,7 @@ export default function AdminDashboardOverview() {
         <div className="delivero-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-2xs font-bold text-slate-500 uppercase tracking-wider">Failed / Disputed</span>
-            <span className="text-base">❌</span>
+            <XCircle className="w-4 h-4 text-rose-600" />
           </div>
           <div className="mt-3">
             <p className="text-2xl font-extrabold text-rose-600 font-mono">{failedOrders}</p>
@@ -112,7 +125,7 @@ export default function AdminDashboardOverview() {
         <div className="delivero-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-2xs font-bold text-slate-500 uppercase tracking-wider">Delivered Revenue</span>
-            <span className="text-base">💰</span>
+            <DollarSign className="w-4 h-4 text-[#5046e4]" />
           </div>
           <div className="mt-3">
             <p className="text-xl font-extrabold text-[#5046e4] font-mono">{formatCurrency(totalRevenue)}</p>
@@ -130,8 +143,8 @@ export default function AdminDashboardOverview() {
               <h3 className="text-sm font-extrabold text-slate-900">Consignment Status Distribution</h3>
               <p className="text-3xs text-slate-400">Live operational states from database</p>
             </div>
-            <Link to="/admin/orders" className="text-xs font-bold text-[#5046e4] hover:underline">
-              View All Orders →
+            <Link to="/admin/orders" className="text-xs font-bold text-[#5046e4] hover:underline flex items-center gap-0.5">
+              View All Orders <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
@@ -225,10 +238,10 @@ export default function AdminDashboardOverview() {
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 space-y-3">
               <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
                 <span className="text-2xs font-extrabold text-amber-900 flex items-center gap-1.5">
-                  <span>⏳</span> Pending Approvals ({agents.filter((a) => a.isVerified === false).length})
+                  <Clock className="w-3.5 h-3.5" /> Pending Approvals ({agents.filter((a) => a.isVerified === false).length})
                 </span>
-                <Link to="/admin/users" className="text-3xs font-bold text-amber-800 hover:underline">
-                  View All →
+                <Link to="/admin/users" className="text-3xs font-bold text-amber-800 hover:underline flex items-center gap-0.5">
+                  View All <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-2">
@@ -257,8 +270,8 @@ export default function AdminDashboardOverview() {
           <div>
             <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
               <h3 className="text-sm font-extrabold text-slate-900">Active Fleet</h3>
-              <Link to="/admin/agents" className="text-3xs font-bold text-[#5046e4] hover:underline">
-                Manage Fleet ({agents.length}) →
+              <Link to="/admin/agents" className="text-3xs font-bold text-[#5046e4] hover:underline flex items-center gap-0.5">
+                Manage Fleet ({agents.length}) <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
@@ -267,7 +280,7 @@ export default function AdminDashboardOverview() {
                 <span className="text-3xs font-bold uppercase tracking-wider text-emerald-800">Available Couriers</span>
                 <p className="text-xl font-black text-emerald-700 font-mono mt-0.5">{availableAgentsCount} / {agents.length}</p>
               </div>
-              <span className="text-2xl">🛵</span>
+              <Bike className="w-6 h-6 text-emerald-600" />
             </div>
 
             <div className="space-y-2">
@@ -291,14 +304,14 @@ export default function AdminDashboardOverview() {
           <div>
             <div className="flex items-center justify-between mb-2 border-b border-slate-100 pb-2">
               <h3 className="text-sm font-extrabold text-slate-900">Configured Zones</h3>
-              <Link to="/admin/zones" className="text-3xs font-bold text-[#5046e4] hover:underline">
-                View Zones ({zones.length}) →
+              <Link to="/admin/zones" className="text-3xs font-bold text-[#5046e4] hover:underline flex items-center gap-0.5">
+                View Zones ({zones.length}) <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {zones.map((z) => (
-                <span key={z.id} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold text-3xs">
-                  🗺️ {z.name}
+                <span key={z.id} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold text-3xs flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-slate-400" /> {z.name}
                 </span>
               ))}
             </div>

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { orderApi } from '../../api/endpoints';
 import DeliveroMap from '../../components/DeliveroMap';
 import { formatCurrency } from '../../utils/helpers';
+import { Bike, MapPin, Flag, User, Phone } from 'lucide-react';
 
 export default function AgentDeliveryFlowPage() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function AgentDeliveryFlowPage() {
       const refreshed = await orderApi.getById(order.id);
       setOrder(refreshed.data);
       if (nextStatus === 'DELIVERED') {
-        alert('🎉 Consignment marked as DELIVERED in the database! Courier share credited.');
+        alert('Consignment marked as DELIVERED in the database! Courier share credited.');
         navigate('/agent/orders');
       }
     } catch (err: any) {
@@ -66,7 +67,7 @@ export default function AgentDeliveryFlowPage() {
   if (!order) {
     return (
       <div className="delivero-card p-12 text-center space-y-3 max-w-xl mx-auto my-12">
-        <span className="text-4xl block">🛵</span>
+        <Bike className="w-12 h-12 text-slate-300 stroke-1 mx-auto" />
         <h3 className="text-base font-extrabold text-slate-900">No Active Assignment</h3>
         <p className="text-xs text-slate-500">You do not have any pending consignments to dispatch right now.</p>
         <Link to="/agent/orders" className="btn-primary inline-block text-xs font-bold shadow-sm mt-2">
@@ -101,13 +102,17 @@ export default function AgentDeliveryFlowPage() {
       <div className="delivero-card p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-            <span className="text-3xs font-bold uppercase text-emerald-700">📍 Pickup Origin</span>
+            <span className="text-3xs font-bold uppercase text-emerald-700 flex items-center gap-1">
+              <MapPin className="w-3 h-3" /> Pickup Origin
+            </span>
             <p className="font-bold text-slate-900">{order.pickupCity} ({order.pickupPincode})</p>
             <p className="text-slate-600">{order.pickupAddress}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-            <span className="text-3xs font-bold uppercase text-purple-700">🏁 Drop Destination</span>
+            <span className="text-3xs font-bold uppercase text-purple-700 flex items-center gap-1">
+              <Flag className="w-3 h-3" /> Drop Destination
+            </span>
             <p className="font-bold text-slate-900">{order.dropCity} ({order.dropPincode})</p>
             <p className="text-slate-600">{order.dropAddress}</p>
             <p className="text-3xs text-slate-400 font-mono mt-1">Receiver: {order.receiverName} ({order.receiverPhone})</p>
@@ -125,7 +130,7 @@ export default function AgentDeliveryFlowPage() {
         <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#5046e4] text-white flex items-center justify-center font-bold text-sm">
-              👤
+              <User className="w-5 h-5" />
             </div>
             <div>
               <p className="text-xs font-bold text-slate-900">{order.receiverName || 'Consignee'}</p>
@@ -135,9 +140,9 @@ export default function AgentDeliveryFlowPage() {
 
           <button
             onClick={() => setShowCallModal(true)}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1 shadow-xs"
+            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-xs"
           >
-            <span>📞</span> Call Customer
+            <Phone className="w-3.5 h-3.5" /> Call Customer
           </button>
         </div>
 
@@ -175,7 +180,9 @@ export default function AgentDeliveryFlowPage() {
       {showCallModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="delivero-card p-6 max-w-xs w-full text-center space-y-3 animate-scale-in">
-            <span className="text-4xl block">📞</span>
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] mx-auto flex items-center justify-center">
+              <Phone className="w-6 h-6" />
+            </div>
             <h4 className="font-extrabold text-slate-900">Calling Customer</h4>
             <p className="text-xs font-bold text-slate-800">{order.receiverName}</p>
             <p className="text-xs text-[#5046e4] font-mono">{order.receiverPhone}</p>

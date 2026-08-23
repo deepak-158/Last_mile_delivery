@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import DeliveroAuthTruckIllustration from '../../components/DeliveroAuthTruckIllustration';
+import { Bike, DollarSign, Headphones, Sparkles } from 'lucide-react';
 
 export default function AgentRegisterPage() {
   const [name, setName] = useState('');
@@ -60,12 +61,12 @@ export default function AgentRegisterPage() {
       <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-2">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#5046e4] flex items-center justify-center text-white font-black text-base shadow-[0_2px_10px_rgba(80,70,228,0.35)]">
-            ✦
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-extrabold text-slate-900 tracking-tight">Delivero</span>
         </Link>
-        <span className="px-3 py-1 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-xl">
-          🛵 Delivery Agent Onboarding
+        <span className="px-3 py-1 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-xl flex items-center gap-1.5">
+          <Bike className="w-3.5 h-3.5" /> Delivery Agent Onboarding
         </span>
       </header>
 
@@ -83,7 +84,9 @@ export default function AgentRegisterPage() {
 
           <div className="space-y-3 pt-2">
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shrink-0">💰</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <DollarSign className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Flexible Earnings</h4>
                 <p className="text-2xs text-slate-500">Work on your own schedule with weekly payouts</p>
@@ -91,7 +94,9 @@ export default function AgentRegisterPage() {
             </div>
 
             <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shrink-0">🎧</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <Headphones className="w-4 h-4" />
+              </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900">Real-time Support</h4>
                 <p className="text-2xs text-slate-500">24/7 dedicated courier support hotline</p>

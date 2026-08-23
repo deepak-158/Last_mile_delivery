@@ -6,6 +6,18 @@ import { fcmService } from '../../services/fcmService';
 import { smsService } from '../../services/smsService';
 import { emailService } from '../../services/emailService';
 import { formatDate } from '../../utils/helpers';
+import {
+  Bell,
+  Volume2,
+  Trash2,
+  Mail,
+  Send,
+  Inbox,
+  Bike,
+  Package,
+  PartyPopper,
+  SendHorizontal,
+} from 'lucide-react';
 
 interface GroupedNotification {
   groupKey: string;
@@ -216,8 +228,6 @@ export default function AdminNotificationsPage() {
       setShowComposeModal(false);
       setSubject('');
       setBody('');
-      setSubject('');
-      setBody('');
     } catch (err: any) {
       showMsg(err?.message || 'Failed to dispatch push notification.', 'error');
     } finally {
@@ -251,7 +261,7 @@ export default function AdminNotificationsPage() {
 
   const handleTestFCM = () => {
     fcmService.triggerLocalAlert(
-      '⚡ Live FCM Dispatch Alert!',
+      'Live FCM Dispatch Alert!',
       'New high-priority express consignment auto-dispatched to Courier Fleet in South Zone.'
     );
   };
@@ -270,7 +280,7 @@ export default function AdminNotificationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>🔔</span> System Notifications & FCM Dispatch
+            <Bell className="w-6 h-6 text-[#5046e4]" /> System Notifications & FCM Dispatch
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Admin console for dispatching targeted push messages and auditing system events
@@ -282,7 +292,7 @@ export default function AdminNotificationsPage() {
             onClick={handleTestFCM}
             className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <span>🔊</span> Test Sound
+            <Volume2 className="w-4 h-4 text-slate-600" /> Test Sound
           </button>
 
           {rawNotifications.length > 0 && (
@@ -291,7 +301,7 @@ export default function AdminNotificationsPage() {
               disabled={clearing}
               className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-rose-200 shadow-xs"
             >
-              <span>🗑️</span> {clearing ? 'Clearing...' : 'Clear All Logs'}
+              <Trash2 className="w-4 h-4" /> {clearing ? 'Clearing...' : 'Clear All Logs'}
             </button>
           )}
 
@@ -299,7 +309,7 @@ export default function AdminNotificationsPage() {
             onClick={() => setShowComposeModal(true)}
             className="btn-primary text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
-            <span>✉️</span> Send Push Message
+            <Send className="w-4 h-4" /> Send Push Message
           </button>
         </div>
       </div>
@@ -336,7 +346,7 @@ export default function AdminNotificationsPage() {
             </div>
           ) : groupedNotifications.length === 0 ? (
             <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              <div className="text-4xl mb-2">📭</div>
+              <Inbox className="w-12 h-12 text-slate-300 mx-auto mb-2" />
               <p className="font-bold text-slate-700 text-sm">No notifications recorded</p>
               <p className="text-2xs text-slate-400 mt-1">Try sending a push message using the button above!</p>
             </div>
@@ -346,16 +356,18 @@ export default function AdminNotificationsPage() {
                 key={n.groupKey}
                 className="p-5 flex items-start gap-4 hover:bg-slate-50/80 transition-colors group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center text-lg shrink-0 shadow-2xs">
-                  {n.type === 'AGENT_DISPATCH'
-                    ? '🛵'
-                    : n.type === 'ORDER_PLACED'
-                    ? '📦'
-                    : n.type === 'VERIFICATION_UPDATE'
-                    ? '🎉'
-                    : n.type === 'ADMIN_DIRECT_MESSAGE' || n.type === 'ADMIN_BROADCAST'
-                    ? '✉️'
-                    : '🔔'}
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-2xs">
+                  {n.type === 'AGENT_DISPATCH' ? (
+                    <Bike className="w-5 h-5" />
+                  ) : n.type === 'ORDER_PLACED' ? (
+                    <Package className="w-5 h-5" />
+                  ) : n.type === 'VERIFICATION_UPDATE' ? (
+                    <PartyPopper className="w-5 h-5" />
+                  ) : n.type === 'ADMIN_DIRECT_MESSAGE' || n.type === 'ADMIN_BROADCAST' ? (
+                    <Mail className="w-5 h-5" />
+                  ) : (
+                    <Bell className="w-5 h-5" />
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -372,7 +384,7 @@ export default function AdminNotificationsPage() {
                         className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 p-1 transition-all rounded cursor-pointer"
                         title="Delete notification log"
                       >
-                        🗑️
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -412,7 +424,7 @@ export default function AdminNotificationsPage() {
           <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 animate-scale-up text-slate-800">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <span>✉️</span> Compose Targeted Push Notification
+                <Mail className="w-5 h-5 text-[#5046e4]" /> Compose Targeted Push Notification
               </h3>
               <button
                 onClick={() => setShowComposeModal(false)}
@@ -433,10 +445,10 @@ export default function AdminNotificationsPage() {
                     onChange={(e) => setTargetType(e.target.value as any)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                   >
-                    <option value="USER">🎯 Specific User</option>
-                    <option value="CUSTOMER">👤 All Customers</option>
-                    <option value="AGENT">🛵 All Agents (Fleet)</option>
-                    <option value="ALL">📢 Global Broadcast</option>
+                    <option value="USER">Specific User</option>
+                    <option value="CUSTOMER">All Customers</option>
+                    <option value="AGENT">All Agents (Fleet)</option>
+                    <option value="ALL">Global Broadcast</option>
                   </select>
                 </div>
 
@@ -449,10 +461,10 @@ export default function AdminNotificationsPage() {
                     onChange={(e) => setDispatchChannel(e.target.value as any)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                   >
-                    <option value="PUSH_AND_IN_APP">🔔 Push & In-App (FCM)</option>
-                    <option value="SMS_TWILIO">📱 SMS (Twilio Gateway)</option>
-                    <option value="EMAIL_GMAIL">📧 Email (Gmail Gateway)</option>
-                    <option value="OMNICHANNEL">🌐 Omnichannel (Push + SMS + Email)</option>
+                    <option value="PUSH_AND_IN_APP">Push & In-App (FCM)</option>
+                    <option value="SMS_TWILIO">SMS (Twilio Gateway)</option>
+                    <option value="EMAIL_GMAIL">Email (Gmail Gateway)</option>
+                    <option value="OMNICHANNEL">Omnichannel (Push + SMS + Email)</option>
                   </select>
                 </div>
               </div>
@@ -519,7 +531,7 @@ export default function AdminNotificationsPage() {
                   disabled={sending}
                   className="btn-primary text-xs font-bold px-5 py-2 flex items-center gap-1.5 shadow-md cursor-pointer"
                 >
-                  {sending ? 'Sending Push...' : '🚀 Send Push & Sound Alert'}
+                  <SendHorizontal className="w-4 h-4" /> {sending ? 'Sending Push...' : 'Send Push & Sound Alert'}
                 </button>
               </div>
             </form>

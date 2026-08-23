@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import {
+  Bike,
+  Phone,
+  Edit2,
+  Save,
+  Building2,
+  Package,
+  Bell,
+  MessageSquare,
+  LogOut,
+  ChevronRight,
+} from 'lucide-react';
 
 export default function AgentProfilePage() {
   const { user, updateProfile, logout } = useAuth();
@@ -20,11 +32,11 @@ export default function AgentProfilePage() {
   }, [user]);
 
   const menuItems = [
-    { label: 'Bank & Payout Details', icon: '🏦', path: '/agent/wallet' },
-    { label: 'My Assigned Deliveries', icon: '📦', path: '/agent/orders' },
-    { label: 'Live Delivery Dispatch Flow', icon: '🛵', path: '/agent/delivery-flow' },
-    { label: 'Notifications & Dispatch Alerts', icon: '🔔', path: '/agent/notifications' },
-    { label: 'Support & Help Desk', icon: '💬', path: '/agent/support' },
+    { label: 'Bank & Payout Details', icon: Building2, path: '/agent/wallet' },
+    { label: 'My Assigned Deliveries', icon: Package, path: '/agent/orders' },
+    { label: 'Live Delivery Dispatch Flow', icon: Bike, path: '/agent/delivery-flow' },
+    { label: 'Notifications & Dispatch Alerts', icon: Bell, path: '/agent/notifications' },
+    { label: 'Support & Help Desk', icon: MessageSquare, path: '/agent/support' },
   ];
 
   const handleSave = async (e: React.FormEvent) => {
@@ -57,7 +69,7 @@ export default function AgentProfilePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <span>🛵</span> Courier Agent Profile
+          <Bike className="w-6 h-6 text-[#5046e4]" /> Courier Agent Profile
         </h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">
           Manage your courier agent identity, dispatch contact number, and fleet credentials
@@ -92,17 +104,18 @@ export default function AgentProfilePage() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">{user?.email}</p>
-                <p className="text-xs text-slate-700 font-mono font-bold mt-1">
-                  📱 {user?.phone || 'No phone number added'} • ID: AGT-{user?.id?.slice(0, 6)?.toUpperCase()}
+                <p className="text-xs text-slate-700 font-mono font-bold mt-1 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-slate-400" />
+                  {user?.phone || 'No phone number added'} • ID: AGT-{user?.id?.slice(0, 6)?.toUpperCase()}
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => setIsEditing(true)}
-              className="btn-secondary text-xs font-bold py-2.5 px-4 cursor-pointer self-start sm:self-center"
+              className="btn-secondary text-xs font-bold py-2.5 px-4 cursor-pointer self-start sm:self-center inline-flex items-center gap-1.5"
             >
-              ✏️ Edit Details
+              <Edit2 className="w-3.5 h-3.5" /> Edit Details
             </button>
           </div>
         ) : (
@@ -172,7 +185,7 @@ export default function AgentProfilePage() {
                 disabled={saving}
                 className="btn-primary text-xs font-bold px-6 py-2 shadow-md cursor-pointer flex items-center gap-1.5"
               >
-                <span>💾</span> {saving ? 'Saving...' : 'Save Changes'}
+                <Save className="w-3.5 h-3.5" /> {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </form>
@@ -181,26 +194,29 @@ export default function AgentProfilePage() {
 
       {/* Menu Navigation */}
       <div className="bg-white border border-slate-200 rounded-3xl divide-y divide-slate-100 overflow-hidden shadow-sm">
-        {menuItems.map((item) => (
-          <button
-            key={item.label}
-            onClick={() => item.path && navigate(item.path)}
-            className="w-full p-4 px-6 flex items-center justify-between hover:bg-slate-50 transition-colors text-xs font-bold text-slate-700 text-left cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-base">{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-            <span className="text-slate-400">›</span>
-          </button>
-        ))}
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.label}
+              onClick={() => item.path && navigate(item.path)}
+              className="w-full p-4 px-6 flex items-center justify-between hover:bg-slate-50 transition-colors text-xs font-bold text-slate-700 text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Icon className="w-4 h-4 text-slate-500" />
+                <span>{item.label}</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-400" />
+            </button>
+          );
+        })}
 
         <div className="p-4 px-6">
           <button
             onClick={handleLogout}
-            className="w-full py-2.5 text-center text-xs font-extrabold text-rose-600 hover:text-rose-700 transition-colors cursor-pointer"
+            className="w-full py-2.5 text-center text-xs font-extrabold text-rose-600 hover:text-rose-700 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
           >
-            Logout
+            <LogOut className="w-4 h-4" /> Logout
           </button>
         </div>
       </div>

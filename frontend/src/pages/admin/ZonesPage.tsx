@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { zoneApi } from '../../api/endpoints';
+import { MapPin, Trash2, Mail } from 'lucide-react';
 
 export default function ZonesPage() {
   const [zones, setZones] = useState<any[]>([]);
@@ -78,7 +79,7 @@ export default function ZonesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>🗺️</span> Zone & Pincode Management
+            <MapPin className="w-6 h-6 text-[#5046e4]" /> Zone & Pincode Management
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Configure operational delivery regions and map service postal PIN codes
@@ -110,16 +111,16 @@ export default function ZonesPage() {
                 <div className="flex items-start justify-between gap-4 mb-3 pb-3 border-b border-slate-100">
                   <div>
                     <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                      <span>🗺️</span> {zone.name}
+                      <MapPin className="w-5 h-5 text-[#5046e4]" /> {zone.name}
                     </h3>
                     <p className="text-2xs text-slate-500 font-medium mt-0.5">{zone.description}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteZone(zone.id, zone.name)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                     title="Delete Zone"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -145,9 +146,9 @@ export default function ZonesPage() {
                       zone.areas.map((a: any) => (
                         <span
                           key={a.id || a.areaIdentifier}
-                          className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-mono font-bold text-slate-800 shadow-2xs"
+                          className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-mono font-bold text-slate-800 shadow-2xs flex items-center gap-1"
                         >
-                          📮 {a.areaIdentifier}
+                          <Mail className="w-3 h-3 text-slate-400" /> {a.areaIdentifier}
                         </span>
                       ))
                     ) : (
@@ -171,7 +172,7 @@ export default function ZonesPage() {
               <h3 className="text-base font-extrabold text-slate-900">Add Operational Zone</h3>
               <button
                 onClick={() => setShowZoneModal(false)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold"
+                className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -241,7 +242,7 @@ export default function ZonesPage() {
               <h3 className="text-base font-extrabold text-slate-900">Map Service Postal Pincode</h3>
               <button
                 onClick={() => setShowAreaModal(null)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold"
+                className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>

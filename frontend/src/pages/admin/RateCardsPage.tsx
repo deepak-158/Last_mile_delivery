@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { rateCardApi } from '../../api/endpoints';
 import { formatCurrency } from '../../utils/helpers';
+import { CreditCard, Zap, Home, Globe, Edit2 } from 'lucide-react';
 
 export default function RateCardsPage() {
   const [rateCards, setRateCards] = useState<any[]>([]);
@@ -98,7 +99,7 @@ export default function RateCardsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>💳</span> Tariff & Rate Card Engineering
+            <CreditCard className="w-6 h-6 text-[#5046e4]" /> Tariff & Rate Card Engineering
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Configure multi-tier shipping matrices and simulate customer pricing in real time
@@ -117,7 +118,7 @@ export default function RateCardsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-indigo-800/40">
           <div>
             <h3 className="text-sm font-black text-amber-300 flex items-center gap-1.5">
-              <span>⚡</span> Live Dynamic Tariff Simulator
+              <Zap className="w-4 h-4 text-amber-300" /> Live Dynamic Tariff Simulator
             </h3>
             <p className="text-2xs text-slate-300 font-medium mt-0.5">
               Test how tariff parameters calculate total customer freight for any package
@@ -138,8 +139,8 @@ export default function RateCardsPage() {
               onChange={(e) => setSimOrderType(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold"
             >
-              <option value="B2C">🛍️ B2C (Retail)</option>
-              <option value="B2B">🏢 B2B (Enterprise)</option>
+              <option value="B2C">B2C (Retail)</option>
+              <option value="B2B">B2B (Enterprise)</option>
             </select>
           </div>
 
@@ -152,8 +153,8 @@ export default function RateCardsPage() {
               onChange={(e) => setSimRateType(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold"
             >
-              <option value="INTRA_ZONE">🏠 Intra-Zone (Regional)</option>
-              <option value="INTER_ZONE">🌐 Inter-Zone (Express)</option>
+              <option value="INTRA_ZONE">Intra-Zone (Regional)</option>
+              <option value="INTER_ZONE">Inter-Zone (Express)</option>
             </select>
           </div>
 
@@ -233,7 +234,7 @@ export default function RateCardsPage() {
                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shadow-2xs">
-                        {card.rateType === 'INTRA_ZONE' ? '🏠' : '🌐'}
+                        {card.rateType === 'INTRA_ZONE' ? <Home className="w-6 h-6 text-[#5046e4]" /> : <Globe className="w-6 h-6 text-[#5046e4]" />}
                       </div>
                       <div>
                         <h3 className="text-base font-black text-slate-900">
@@ -248,9 +249,9 @@ export default function RateCardsPage() {
                     </div>
                     <button
                       onClick={() => handleOpenEdit(card)}
-                      className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold transition-colors cursor-pointer"
+                      className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5"
                     >
-                      ✏️ Edit Tariff
+                      <Edit2 className="w-3.5 h-3.5" /> Edit Tariff
                     </button>
                   </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { userApi, agentApi } from '../../api/endpoints';
 import { formatDate } from '../../utils/helpers';
+import { Clock, ShieldCheck, Check } from 'lucide-react';
 
 export default function AdminUsersManagement() {
   const [users, setUsers] = useState<any[]>([]);
@@ -85,7 +86,9 @@ export default function AdminUsersManagement() {
       {pendingAgents.length > 0 && (
         <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm animate-scale-in">
           <div className="flex items-center gap-3">
-            <span className="text-2xl p-2.5 rounded-xl bg-amber-100">⏳</span>
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800">
+              <Clock className="w-5 h-5" />
+            </div>
             <div>
               <h4 className="text-xs font-extrabold text-amber-950">
                 {pendingAgents.length} Courier Agent{pendingAgents.length > 1 ? 's' : ''} Awaiting Verification
@@ -122,7 +125,7 @@ export default function AdminUsersManagement() {
                 filterTab === 'PENDING' ? 'bg-amber-500 text-white shadow-sm' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
               }`}
             >
-              <span>⏳</span>
+              <Clock className="w-3 h-3" />
               Pending Approvals ({pendingAgents.length})
             </button>
             <button
@@ -221,11 +224,11 @@ export default function AdminUsersManagement() {
                         {isAgent ? (
                           isPending ? (
                             <span className="px-2.5 py-1 rounded-full text-3xs font-extrabold bg-amber-100 text-amber-800 inline-flex items-center gap-1">
-                              <span>🟡</span> Pending Approval
+                              <Clock className="w-3 h-3 text-amber-600" /> Pending Approval
                             </span>
                           ) : (
                             <span className="px-2.5 py-1 rounded-full text-3xs font-extrabold bg-emerald-100 text-emerald-800 inline-flex items-center gap-1">
-                              <span>🟢</span> Verified Agent
+                              <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified Agent
                             </span>
                           )
                         ) : (
@@ -240,9 +243,9 @@ export default function AdminUsersManagement() {
                             <button
                               disabled={actionLoading === agentId}
                               onClick={() => handleVerifyAgent(agentId, true)}
-                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xs transition-colors shadow-sm"
+                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xs transition-colors shadow-sm inline-flex items-center gap-1"
                             >
-                              {actionLoading === agentId ? 'Saving...' : '✓ Approve'}
+                              <Check className="w-3 h-3" /> {actionLoading === agentId ? 'Saving...' : 'Approve'}
                             </button>
                             <button
                               disabled={actionLoading === agentId}

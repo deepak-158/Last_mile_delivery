@@ -6,6 +6,7 @@ import {
   getOrderActualWeight,
   getOrderBillableWeight,
 } from '../utils/helpers';
+import { Printer, Package, Flag, Phone } from 'lucide-react';
 
 interface TaxInvoiceViewProps {
   order: any;
@@ -47,7 +48,7 @@ export default function TaxInvoiceView({ order, onClose }: TaxInvoiceViewProps) 
             onClick={() => window.print()}
             className="px-4 py-1.5 bg-[#5046e4] text-white text-xs font-bold rounded-xl hover:bg-[#4338ca] shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
-            <span>🖨️</span> Print / Save as PDF
+            <Printer className="w-3.5 h-3.5" /> Print / Save as PDF
           </button>
           {onClose && (
             <button
@@ -117,24 +118,28 @@ export default function TaxInvoiceView({ order, onClose }: TaxInvoiceViewProps) 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
         {/* Shipper / Consignor */}
         <div className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/50">
-          <span className="text-3xs font-bold text-emerald-700 uppercase tracking-wider block mb-0.5">
-            📦 Billed From / Consignor (Sender)
+          <span className="text-3xs font-bold text-emerald-700 uppercase tracking-wider block mb-0.5 flex items-center gap-1">
+            <Package className="w-3 h-3 text-emerald-600" /> Billed From / Consignor (Sender)
           </span>
           <p className="text-xs font-bold text-slate-900">{order.senderName || 'Authorized Consignor'}</p>
           <p className="text-3xs text-slate-600 mt-0.5 leading-snug">{order.pickupAddress}</p>
           <p className="text-3xs font-mono font-bold text-slate-800 mt-0.5">PIN: {order.pickupPincode}</p>
-          <p className="text-3xs text-slate-500">📞 Phone: {order.senderPhone || 'N/A'}</p>
+          <p className="text-3xs text-slate-500 flex items-center gap-1 mt-0.5">
+            <Phone className="w-2.5 h-2.5 text-slate-400" /> {order.senderPhone || 'N/A'}
+          </p>
         </div>
 
         {/* Consignee */}
         <div className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/50">
-          <span className="text-3xs font-bold text-indigo-700 uppercase tracking-wider block mb-0.5">
-            🏁 Billed To / Consignee (Recipient)
+          <span className="text-3xs font-bold text-indigo-700 uppercase tracking-wider block mb-0.5 flex items-center gap-1">
+            <Flag className="w-3 h-3 text-indigo-600" /> Billed To / Consignee (Recipient)
           </span>
           <p className="text-xs font-bold text-slate-900">{order.receiverName || 'Authorized Consignee'}</p>
           <p className="text-3xs text-slate-600 mt-0.5 leading-snug">{order.dropAddress}</p>
           <p className="text-3xs font-mono font-bold text-slate-800 mt-0.5">PIN: {order.dropPincode}</p>
-          <p className="text-3xs text-slate-500">📞 Phone: {order.receiverPhone || 'N/A'}</p>
+          <p className="text-3xs text-slate-500 flex items-center gap-1 mt-0.5">
+            <Phone className="w-2.5 h-2.5 text-slate-400" /> {order.receiverPhone || 'N/A'}
+          </p>
         </div>
       </div>
 

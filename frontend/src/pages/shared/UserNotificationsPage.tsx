@@ -5,6 +5,17 @@ import { useAuth } from '../../contexts/AuthContext';
 import { notificationService, NotificationItem } from '../../services/notificationService';
 import { formatDate } from '../../utils/helpers';
 import { fcmService } from '../../services/fcmService';
+import {
+  Bell,
+  Volume2,
+  Trash2,
+  Package,
+  Bike,
+  Megaphone,
+  Inbox,
+  Sparkles,
+  Mail,
+} from 'lucide-react';
 
 export default function UserNotificationsPage() {
   const { user } = useAuth();
@@ -44,7 +55,7 @@ export default function UserNotificationsPage() {
 
   const handleTestChime = () => {
     fcmService.triggerLocalAlert(
-      '🔔 Test Notification Chime',
+      'Test Notification Chime',
       'This is a sample audio and push test alert for your account.'
     );
   };
@@ -89,7 +100,7 @@ export default function UserNotificationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>🔔</span> My Notifications & Alerts
+            <Bell className="w-6 h-6 text-[#5046e4]" /> My Notifications & Alerts
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Real-time delivery milestones, parcel dispatches, and personal updates
@@ -101,7 +112,7 @@ export default function UserNotificationsPage() {
             onClick={handleTestChime}
             className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <span>🔊</span> Test Sound
+            <Volume2 className="w-4 h-4" /> Test Sound
           </button>
 
           {notifications.length > 0 && (
@@ -110,7 +121,7 @@ export default function UserNotificationsPage() {
               disabled={clearing}
               className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-rose-200 shadow-xs"
             >
-              <span>🗑️</span> {clearing ? 'Clearing...' : 'Clear All'}
+              <Trash2 className="w-4 h-4" /> {clearing ? 'Clearing...' : 'Clear All'}
             </button>
           )}
         </div>
@@ -119,23 +130,27 @@ export default function UserNotificationsPage() {
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {[
-          { id: 'ALL', label: `All (${notifications.length})` },
-          { id: 'ORDERS', label: '📦 Orders' },
-          { id: 'DISPATCHES', label: '🛵 Dispatches' },
-          { id: 'ALERTS', label: '📢 Admin Messages' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveFilter(tab.id as any)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              activeFilter === tab.id
-                ? 'bg-[#5046e4] text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+          { id: 'ALL', label: `All (${notifications.length})`, icon: null },
+          { id: 'ORDERS', label: 'Orders', icon: Package },
+          { id: 'DISPATCHES', label: 'Dispatches', icon: Bike },
+          { id: 'ALERTS', label: 'Admin Messages', icon: Megaphone },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id as any)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                activeFilter === tab.id
+                  ? 'bg-[#5046e4] text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              }`}
+            >
+              {Icon && <Icon className="w-3.5 h-3.5" />}
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Notifications Feed */}
@@ -158,7 +173,7 @@ export default function UserNotificationsPage() {
             </div>
           ) : filteredNotifs.length === 0 ? (
             <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              <div className="text-4xl mb-2">📭</div>
+              <Inbox className="w-12 h-12 mx-auto mb-2 text-slate-300 stroke-1" />
               <p className="font-bold text-slate-700 text-sm">No notifications found</p>
               <p className="text-2xs text-slate-400 mt-1 max-w-sm mx-auto">
                 When new parcel updates or assignments are dispatched, they will appear here with live audio alerts.
@@ -170,16 +185,18 @@ export default function UserNotificationsPage() {
                 key={n.id}
                 className="p-5 flex items-start gap-4 hover:bg-slate-50/80 transition-colors group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center text-lg shrink-0 shadow-2xs">
-                  {n.type === 'AGENT_DISPATCH'
-                    ? '🛵'
-                    : n.type === 'ORDER_PLACED'
-                    ? '📦'
-                    : n.type === 'VERIFICATION_UPDATE'
-                    ? '🎉'
-                    : n.type === 'ADMIN_DIRECT_MESSAGE'
-                    ? '✉️'
-                    : '🔔'}
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-2xs">
+                  {n.type === 'AGENT_DISPATCH' ? (
+                    <Bike className="w-5 h-5 text-indigo-600" />
+                  ) : n.type === 'ORDER_PLACED' ? (
+                    <Package className="w-5 h-5 text-indigo-600" />
+                  ) : n.type === 'VERIFICATION_UPDATE' ? (
+                    <Sparkles className="w-5 h-5 text-amber-500" />
+                  ) : n.type === 'ADMIN_DIRECT_MESSAGE' ? (
+                    <Mail className="w-5 h-5 text-indigo-600" />
+                  ) : (
+                    <Bell className="w-5 h-5 text-indigo-600" />
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -197,7 +214,7 @@ export default function UserNotificationsPage() {
                         className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 p-1 transition-all rounded"
                         title="Delete notification"
                       >
-                        🗑️
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>

@@ -12,6 +12,7 @@ import {
   STATUS_COLORS,
   STATUS_LABELS,
 } from '../../utils/helpers';
+import { Package, Plus, Calendar, Bike, ArrowRight } from 'lucide-react';
 
 export default function CustomerOrdersListPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -72,7 +73,7 @@ export default function CustomerOrdersListPage() {
           <p className="text-xs text-slate-500 font-medium mt-0.5">Track active express dispatches and past delivery history</p>
         </div>
         <Link to="/customer/orders/new" className="btn-primary text-xs shadow-md font-bold flex items-center gap-1.5">
-          <span>+</span> Book New Delivery
+          <Plus className="w-4 h-4" /> Book New Delivery
         </Link>
       </div>
 
@@ -110,11 +111,11 @@ export default function CustomerOrdersListPage() {
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="delivero-card p-12 text-center space-y-4">
-          <span className="text-4xl block">📦</span>
+          <Package className="w-12 h-12 mx-auto text-slate-300 stroke-1" />
           <h3 className="font-extrabold text-slate-900 text-base">No orders found</h3>
           <p className="text-xs text-slate-500">You don't have any orders in this category yet.</p>
-          <Link to="/customer/orders/new" className="btn-primary inline-block text-xs font-bold shadow-sm">
-            Book an Express Parcel Delivery →
+          <Link to="/customer/orders/new" className="btn-primary inline-flex items-center gap-1.5 text-xs font-bold shadow-sm">
+            <Plus className="w-4 h-4" /> Book an Express Parcel Delivery
           </Link>
         </div>
       ) : (
@@ -131,7 +132,7 @@ export default function CustomerOrdersListPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-[#5046e4] flex items-center justify-center text-2xl shadow-xs">
-                      📦
+                      <Package className="w-6 h-6" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
@@ -176,24 +177,25 @@ export default function CustomerOrdersListPage() {
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-                  <span className="text-slate-500 text-3xs font-medium">
+                  <span className="text-slate-500 text-3xs font-medium flex items-center gap-1.5">
+                    <Bike className="w-3.5 h-3.5 text-slate-400" />
                     {ord.assignedAgent?.user?.name
-                      ? `🛵 Courier: ${ord.assignedAgent.user.name}`
-                      : '🛵 Awaiting Automated Courier Assignment'}
+                      ? `Courier: ${ord.assignedAgent.user.name}`
+                      : 'Awaiting Automated Courier Assignment'}
                   </span>
                   <div className="flex items-center gap-3">
                     {/* Reschedule Button for Failed Orders */}
                     {ord.status === 'FAILED' && (
                       <button
                         onClick={() => setRescheduleOrder(ord)}
-                        className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-lg border border-amber-200 text-xs"
+                        className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-lg border border-amber-200 text-xs flex items-center gap-1"
                       >
-                        📅 Reschedule Delivery
+                        <Calendar className="w-3.5 h-3.5" /> Reschedule Delivery
                       </button>
                     )}
 
-                    <Link to={`/customer/orders/${ord.id}`} className="text-[#5046e4] font-black text-xs hover:underline">
-                      View Details & Receipt →
+                    <Link to={`/customer/orders/${ord.id}`} className="text-[#5046e4] font-black text-xs hover:underline inline-flex items-center gap-1">
+                      View Details & Receipt <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>

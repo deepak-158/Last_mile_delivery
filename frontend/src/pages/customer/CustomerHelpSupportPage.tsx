@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MessageSquare, Phone, HelpCircle } from 'lucide-react';
 
 export default function CustomerHelpSupportPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -40,7 +41,9 @@ export default function CustomerHelpSupportPage() {
           onClick={() => setShowChat(true)}
           className="delivero-card p-5 text-left hover:border-[#5046e4]/40 hover:shadow-md transition-all space-y-2"
         >
-          <span className="text-2xl">💬</span>
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-[#5046e4] flex items-center justify-center">
+            <MessageSquare className="w-5 h-5" />
+          </div>
           <h3 className="font-extrabold text-sm text-slate-900">Live Chat</h3>
           <p className="text-2xs text-slate-500">Chat with support team (Instant reply)</p>
         </button>
@@ -49,13 +52,17 @@ export default function CustomerHelpSupportPage() {
           href="tel:+9118001234567"
           className="delivero-card p-5 text-left hover:border-[#5046e4]/40 hover:shadow-md transition-all space-y-2 block"
         >
-          <span className="text-2xl">📞</span>
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <Phone className="w-5 h-5" />
+          </div>
           <h3 className="font-extrabold text-sm text-slate-900">Call Support</h3>
           <p className="text-2xs text-slate-500 font-mono">+91 1800 123 4567 (Toll-Free)</p>
         </a>
 
         <div className="delivero-card p-5 text-left space-y-2">
-          <span className="text-2xl">💡</span>
+          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <HelpCircle className="w-5 h-5" />
+          </div>
           <h3 className="font-extrabold text-sm text-slate-900">FAQs</h3>
           <p className="text-2xs text-slate-500">Find answers quickly below</p>
         </div>

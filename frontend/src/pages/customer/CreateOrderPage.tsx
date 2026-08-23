@@ -5,6 +5,19 @@ import { formatCurrency } from '../../utils/helpers';
 import { useAuth } from '../../contexts/AuthContext';
 import Package3DVisualizer from '../../components/Package3DVisualizer';
 import RouteMapVisualizer from '../../components/RouteMapVisualizer';
+import {
+  Check,
+  MapPin,
+  Flag,
+  Phone,
+  Banknote,
+  CreditCard,
+  BookOpen,
+  Box,
+  SendHorizontal,
+  ArrowRight,
+  ArrowLeft,
+} from 'lucide-react';
 
 interface PreviewData {
   senderName?: string;
@@ -274,7 +287,7 @@ export default function CreateOrderPage() {
     return (
       <div className="max-w-xl mx-auto py-12 text-center space-y-6 animate-scale-in">
         <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-4xl shadow-sm border border-emerald-200">
-          ✓
+          <Check className="w-10 h-10" />
         </div>
         <div className="space-y-2">
           <span className="text-3xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
@@ -309,8 +322,8 @@ export default function CreateOrderPage() {
           <Link to="/customer/orders" className="btn-secondary flex-1 py-3 text-xs font-bold">
             View in My Orders
           </Link>
-          <Link to={`/customer/orders/${confirmedOrderId}`} className="btn-primary flex-1 py-3 text-xs font-bold shadow-md">
-            Track Consignment →
+          <Link to={`/customer/orders/${confirmedOrderId}`} className="btn-primary flex-1 py-3 text-xs font-bold shadow-md inline-flex items-center justify-center gap-1">
+            Track Consignment <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -327,7 +340,7 @@ export default function CreateOrderPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-5 h-5 rounded-full bg-emerald-500 text-white text-3xs font-black flex items-center justify-center">✓</span>
+              <span className="w-5 h-5 rounded-full bg-emerald-500 text-white text-3xs font-black flex items-center justify-center"><Check className="w-3 h-3" /></span>
               <span className="text-3xs font-bold text-emerald-600">Details</span>
               <span className="text-slate-300">→</span>
               <span className="w-5 h-5 rounded-full bg-[#5046e4] text-white text-3xs font-black flex items-center justify-center">2</span>
@@ -339,7 +352,7 @@ export default function CreateOrderPage() {
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">Review Consignment & Delivery Fare</h1>
           </div>
           <button onClick={() => setStep('form')} className="btn-secondary text-xs py-2 px-4 flex items-center gap-1 font-bold">
-            ← Modify Details
+            <ArrowLeft className="w-3.5 h-3.5" /> Modify Details
           </button>
         </div>
 
@@ -352,11 +365,13 @@ export default function CreateOrderPage() {
         {/* Sender & Receiver Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="delivero-card p-5 border-l-4 border-l-emerald-500">
-            <span className="text-3xs font-extrabold uppercase tracking-wider text-emerald-700">
-              📍 Sender (Origin)
+            <span className="text-3xs font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5" /> Sender (Origin)
             </span>
             <p className="font-bold text-slate-900 text-sm mt-1">{form.senderName}</p>
-            <p className="text-xs text-slate-500 font-mono">📞 {form.senderPhone}</p>
+            <p className="text-xs text-slate-500 font-mono flex items-center gap-1 mt-0.5">
+              <Phone className="w-3 h-3" /> {form.senderPhone}
+            </p>
             <p className="text-xs text-slate-700 mt-2 font-medium">{form.pickupAddress}</p>
             <p className="text-3xs text-slate-400 font-mono mt-0.5">
               {preview.pickupLocation.locality || ''} {preview.pickupLocation.city} (PIN: {preview.pickupLocation.pincode})
@@ -364,11 +379,13 @@ export default function CreateOrderPage() {
           </div>
 
           <div className="delivero-card p-5 border-l-4 border-l-purple-500">
-            <span className="text-3xs font-extrabold uppercase tracking-wider text-purple-700">
-              🏁 Consignee (Destination)
+            <span className="text-3xs font-extrabold uppercase tracking-wider text-purple-700 flex items-center gap-1">
+              <Flag className="w-3.5 h-3.5" /> Consignee (Destination)
             </span>
             <p className="font-bold text-slate-900 text-sm mt-1">{form.receiverName}</p>
-            <p className="text-xs text-slate-500 font-mono">📞 {form.receiverPhone}</p>
+            <p className="text-xs text-slate-500 font-mono flex items-center gap-1 mt-0.5">
+              <Phone className="w-3 h-3" /> {form.receiverPhone}
+            </p>
             <p className="text-xs text-slate-700 mt-2 font-medium">{form.dropAddress}</p>
             <p className="text-3xs text-slate-400 font-mono mt-0.5">
               {preview.dropLocation.locality || ''} {preview.dropLocation.city} (PIN: {preview.dropLocation.pincode})
@@ -399,7 +416,7 @@ export default function CreateOrderPage() {
         {/* Itemized Delivery Fare Card */}
         <div className="delivero-card p-6 space-y-4 shadow-sm">
           <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-            <span className="text-emerald-500">💰</span> Itemized Delivery Fare Breakdown
+            <Banknote className="w-4 h-4 text-emerald-600" /> Itemized Delivery Fare Breakdown
           </h3>
 
           <div className="space-y-3 text-xs">
@@ -452,7 +469,11 @@ export default function CreateOrderPage() {
               className="btn-primary flex-1 py-3.5 text-xs font-black shadow-md flex items-center justify-center gap-2"
             >
               {loading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-              {loading ? 'Dispatching...' : '🚀 Confirm & Dispatch Consignment'}
+              {loading ? 'Dispatching...' : (
+                <>
+                  <SendHorizontal className="w-4 h-4" /> Confirm & Dispatch Consignment
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -496,7 +517,9 @@ export default function CreateOrderPage() {
         <div className="delivero-card p-6 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">📍</span>
+              <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                <MapPin className="w-3.5 h-3.5" />
+              </span>
               1. Sender & Pickup Origin Details
             </h2>
 
@@ -513,7 +536,7 @@ export default function CreateOrderPage() {
                   <option value="">-- Address Book --</option>
                   {savedAddresses.map((a) => (
                     <option key={a.id} value={a.id}>
-                      📖 {a.label} ({a.contactName})
+                      {a.label} ({a.contactName})
                     </option>
                   ))}
                 </select>
@@ -657,7 +680,9 @@ export default function CreateOrderPage() {
         <div className="delivero-card p-6 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs">🏁</span>
+              <span className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs">
+                <Flag className="w-3.5 h-3.5" />
+              </span>
               2. Receiver & Drop Destination Details
             </h2>
 
@@ -674,7 +699,7 @@ export default function CreateOrderPage() {
                   <option value="">-- Address Book --</option>
                   {savedAddresses.map((a) => (
                     <option key={a.id} value={a.id}>
-                      📖 {a.label} ({a.contactName})
+                      {a.label} ({a.contactName})
                     </option>
                   ))}
                 </select>
@@ -827,7 +852,9 @@ export default function CreateOrderPage() {
         {/* 3. PACKAGE DIMENSIONS & OPTIONS */}
         <div className="delivero-card p-6 space-y-4">
           <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-            <span className="w-6 h-6 rounded-lg bg-indigo-50 text-[#5046e4] flex items-center justify-center text-xs">📐</span>
+            <span className="w-6 h-6 rounded-lg bg-indigo-50 text-[#5046e4] flex items-center justify-center text-xs">
+              <Box className="w-3.5 h-3.5" />
+            </span>
             3. Package Dimensions & Shipping Type
           </h2>
 
@@ -875,22 +902,26 @@ export default function CreateOrderPage() {
               <label className="block text-3xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Payment Mode</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { key: 'PREPAID', label: '💳 Prepaid' },
-                  { key: 'COD', label: '💵 COD (+Surcharge)' },
-                ].map((pm) => (
-                  <button
-                    key={pm.key}
-                    type="button"
-                    onClick={() => updateField('paymentType', pm.key)}
-                    className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                      form.paymentType === pm.key
-                        ? 'bg-[#5046e4] text-white border-[#5046e4] shadow-sm'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    {pm.label}
-                  </button>
-                ))}
+                  { key: 'PREPAID', label: 'Prepaid', icon: CreditCard },
+                  { key: 'COD', label: 'COD (+Surcharge)', icon: Banknote },
+                ].map((pm) => {
+                  const Icon = pm.icon;
+                  return (
+                    <button
+                      key={pm.key}
+                      type="button"
+                      onClick={() => updateField('paymentType', pm.key)}
+                      className={`py-2 rounded-xl text-xs font-bold border transition-all inline-flex items-center justify-center gap-1.5 ${
+                        form.paymentType === pm.key
+                          ? 'bg-[#5046e4] text-white border-[#5046e4] shadow-sm'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {pm.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -903,7 +934,11 @@ export default function CreateOrderPage() {
           className="btn-primary w-full py-4 text-sm font-black shadow-md flex items-center justify-center gap-2"
         >
           {loading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-          {loading ? 'Computing Dynamic Fare...' : 'Preview Delivery Charge →'}
+          {loading ? 'Computing Dynamic Fare...' : (
+            <>
+              Preview Delivery Charge <ArrowRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </form>
     </div>

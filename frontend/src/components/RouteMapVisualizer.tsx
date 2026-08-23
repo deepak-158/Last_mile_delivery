@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { Globe, MapPin, Zap, Plane, Radio, Flag } from 'lucide-react';
 
 interface RouteMapVisualizerProps {
   pickupLocation: {
@@ -80,7 +81,7 @@ export default function RouteMapVisualizer({
       className: 'custom-map-marker',
       html: `
         <div style="background-color: #10b981; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; box-shadow: 0 4px 10px rgba(16,185,129,0.5); border: 2px solid white;">
-          📍
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
       `,
       iconSize: [28, 28],
@@ -92,7 +93,7 @@ export default function RouteMapVisualizer({
       className: 'custom-map-marker',
       html: `
         <div style="background-color: #5046e4; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; box-shadow: 0 4px 10px rgba(80,70,228,0.5); border: 2px solid white;">
-          🏁
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
         </div>
       `,
       iconSize: [28, 28],
@@ -146,16 +147,24 @@ export default function RouteMapVisualizer({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div>
           <h4 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-            <span className="text-emerald-500">🌐</span> Live OpenStreetMap Routing & Spatial Corridor
+            <Globe className="w-4 h-4 text-emerald-500" /> Live OpenStreetMap Routing & Spatial Corridor
           </h4>
           <p className="text-3xs text-slate-500 font-medium">Real road network distance calculated via {routingEngine}</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-black px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
-            📍 {distanceKm} km Road Distance
+          <span className="text-xs font-mono font-black px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5" /> {distanceKm} km Road Distance
           </span>
-          <span className="text-xs font-bold px-3 py-1 rounded-xl bg-indigo-50 text-[#5046e4] border border-indigo-100">
-            {isIntraZone ? '⚡ Intra-Zone Direct' : '✈️ Inter-Zone Freight'}
+          <span className="text-xs font-bold px-3 py-1 rounded-xl bg-indigo-50 text-[#5046e4] border border-indigo-100 inline-flex items-center gap-1">
+            {isIntraZone ? (
+              <>
+                <Zap className="w-3.5 h-3.5" /> Intra-Zone Direct
+              </>
+            ) : (
+              <>
+                <Plane className="w-3.5 h-3.5" /> Inter-Zone Freight
+              </>
+            )}
           </span>
         </div>
       </div>
@@ -179,7 +188,9 @@ export default function RouteMapVisualizer({
         </div>
         <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
           <span className="text-slate-500 text-3xs uppercase font-bold">Routing Algorithm</span>
-          <p className="font-bold text-emerald-700 mt-0.5">📡 {routingEngine}</p>
+          <p className="font-bold text-emerald-700 mt-0.5 flex items-center gap-1">
+            <Radio className="w-3.5 h-3.5" /> {routingEngine}
+          </p>
         </div>
       </div>
     </div>
