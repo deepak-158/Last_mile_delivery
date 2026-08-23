@@ -26,6 +26,7 @@ interface AuthContextType {
     vehicleNumber?: string;
     zoneId?: string;
   }) => Promise<void>;
+  updateProfile: (data: { name?: string; phone?: string }) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -126,6 +127,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(newToken);
   };
 
+  const updateProfile = async (data: { name?: string; phone?: string }) => {
+    const updated = await authService.updateUserProfile(data);
+    const u: User = {
+      id: updated.id,
+      email: updated.email,
+      name: updated.name,
+      role: updated.role,
+      phone: updated.phone,
+      walletBalance: updated.walletBalance,
+    };
+    setUser(u);
+  };
+
   const logout = async () => {
     await authService.logout();
     setToken(null);
@@ -133,7 +147,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, loginWithGoogle, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isLoading,
+        login,
+        loginWithGoogle,
+        register,
+        updateProfile,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

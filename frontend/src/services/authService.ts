@@ -348,6 +348,27 @@ export const authService = {
   },
 
   /**
+   * Update name and phone number for currently logged in user
+   */
+  async updateUserProfile(data: { name?: string; phone?: string }): Promise<UserProfile> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error('User not authenticated.');
+
+    const userRef = doc(db, 'users', currentUser.uid);
+    const updateData: Record<string, any> = {
+      updatedAt: new Date().toISOString(),
+    };
+    if (data.name !== undefined) updateData.name = data.name.trim();
+    if (data.phone !== undefined) updateData.phone = data.phone.trim();
+
+    await setDoc(userRef, updateData, { merge: true });
+
+    const updated = await this.getUserProfile(currentUser.uid, currentUser.email || '');
+    localStorage.setItem('user', JSON.stringify(updated));
+    return updated;
+  },
+
+  /**
    * Listen to Firebase auth state changes
    */
   onAuthStateChanged(callback: (user: UserProfile | null) => void) {
