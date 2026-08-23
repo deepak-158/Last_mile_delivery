@@ -264,11 +264,22 @@ export const authService = {
   },
 
   /**
-   * Fetch Firestore user profile by UID (with safe fallback)
+   * Fetch Firestore user profile by UID (with safe fallback & demo agent linking)
    */
   async getUserProfile(uid: string, fallbackEmail = ''): Promise<UserProfile> {
     const cleanEmail = fallbackEmail.toLowerCase().trim();
     const isWhitelistedAdmin = ALLOWED_ADMIN_EMAILS.some((e) => e.toLowerCase() === cleanEmail) || cleanEmail.startsWith('admin@');
+
+    const KNOWN_NAMES: Record<string, string> = {
+      'agent.north@lastmile.dev': 'Raj Kumar',
+      'agent.south@lastmile.dev': 'Priya Sharma',
+      'agent.east@lastmile.dev': 'Amit Das',
+      'agent.west@lastmile.dev': 'Sneha Patel',
+      'customer@example.com': 'Rohan Mehta',
+      'admin@lastmile.dev': 'System Admin',
+      'deepakshukla1508.i@gmail.com': 'Deepak Shukla',
+      'dipakshukla158@gmail.com': 'Deepak Shukla',
+    };
 
     try {
       const snap = await getDoc(doc(db, 'users', uid));
@@ -280,10 +291,36 @@ export const authService = {
           ? 'ADMIN'
           : ((data.role || (email.includes('agent') ? 'AGENT' : 'CUSTOMER')).toUpperCase() as 'CUSTOMER' | 'AGENT' | 'ADMIN');
 
-        // Sync role if out of sync
-        if (isAdmin && data.role !== 'ADMIN') {
+        let name = data.name;
+        if (!name || name === email.split('@')[0] || name === 'agent.north' || name === 'agent.south' || name === 'agent.east' || name === 'agent.west') {
+          if (KNOWN_NAMES[email]) {
+            name = KNOWN_NAMES[email];
+            // Sync resolved friendly name to Firestore
+            setDoc(doc(db, 'users', uid), { name }, { merge: true }).catch(() => {});
+          }
+        }
+
+        // If agent, ensure an active agent record exists linked to this UID
+        if (role === 'AGENT') {
           try {
-            await setDoc(doc(db, 'users', uid), { role: 'ADMIN' }, { merge: true });
+            const agentDocRef = doc(db, 'agents', uid);
+            const agentSnap = await getDoc(agentDocRef);
+            if (!agentSnap.exists()) {
+              await setDoc(agentDocRef, {
+                id: uid,
+                userId: uid,
+                vehicleType: 'Two Wheeler / Motorcycle',
+                vehicleNumber: 'DL 01 AB 1234',
+                currentZoneId: 'zone-north-zone',
+                latitude: 28.6139,
+                longitude: 77.2090,
+                isVerified: true,
+                verificationStatus: 'VERIFIED',
+                isAvailable: true,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              }, { merge: true });
+            }
           } catch {
             // ignore
           }
@@ -292,7 +329,7 @@ export const authService = {
         return {
           id: uid,
           email: data.email || fallbackEmail,
-          name: data.name || (fallbackEmail ? fallbackEmail.split('@')[0] : 'User'),
+          name: name || (fallbackEmail ? fallbackEmail.split('@')[0] : 'User'),
           role,
           phone: data.phone || '',
           walletBalance: typeof data.walletBalance === 'number' ? data.walletBalance : 5000,
@@ -303,10 +340,12 @@ export const authService = {
     }
 
     const fallbackRole = isWhitelistedAdmin ? 'ADMIN' : cleanEmail.includes('agent') ? 'AGENT' : 'CUSTOMER';
+    const resolvedName = KNOWN_NAMES[cleanEmail] || cleanEmail.split('@')[0] || 'User';
+
     return {
       id: uid,
       email: fallbackEmail,
-      name: fallbackEmail.split('@')[0] || 'User',
+      name: resolvedName,
       role: fallbackRole,
       walletBalance: 5000,
     };

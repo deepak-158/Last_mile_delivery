@@ -21,11 +21,9 @@ export default function AgentDashboardOverview() {
         if (myAgent) {
           setAgentProfile(myAgent);
           setIsAvailable(myAgent.isAvailable);
-          const ordersRes = await orderApi.getAll({ assignedAgentId: myAgent.id }).catch(() => ({ data: [] }));
-          setOrders((ordersRes.data || []).filter((o: any) => o.assignedAgentId === myAgent.id || o.assignedAgent?.id === myAgent.id));
-        } else {
-          setOrders([]);
         }
+        const ordersRes = await orderApi.getAll().catch(() => ({ data: [] }));
+        setOrders(ordersRes.data || []);
       } catch (err) {
         console.error('Failed to load agent dashboard data:', err);
       } finally {

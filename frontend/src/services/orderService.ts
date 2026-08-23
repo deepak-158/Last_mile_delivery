@@ -384,7 +384,15 @@ export const orderService = {
           : `Your order ${orderNumber} is scheduled for pickup at ${data.pickupPincode}. Total: ₹${finalTotalCharge}`,
       });
 
-      const customerPhone = data.pickupContactPhone || user.phoneNumber || '';
+      let customerPhone = data.pickupContactPhone || '';
+      if (!customerPhone) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) customerPhone = userDoc.data().phone || '';
+        } catch {
+          // ignore
+        }
+      }
       if (customerPhone) {
         smsService.sendOrderBookedSMS(customerPhone, orderNumber, finalTotalCharge, assignedAgentName);
       }
@@ -503,18 +511,45 @@ export const orderService = {
       })();
 
       if (userRole === 'AGENT') {
-        let myAgentId = '';
-        for (const [aId, aData] of agentsMap.entries()) {
-          if (aData.userId === currentUser.uid) {
-            myAgentId = aId;
-            break;
+        const myAgentIdentifiers = new Set<string>();
+        myAgentIdentifiers.add(currentUser.uid);
+        if (userEmail) {
+          myAgentIdentifiers.add(userEmail);
+          if (userEmail.includes('agent.north')) {
+            myAgentIdentifiers.add('demo-agent-north-uid');
+            myAgentIdentifiers.add('agent-north-delhi');
+          }
+          if (userEmail.includes('agent.south')) {
+            myAgentIdentifiers.add('demo-agent-south-uid');
+            myAgentIdentifiers.add('agent-south-bangalore');
+          }
+          if (userEmail.includes('agent.east')) {
+            myAgentIdentifiers.add('demo-agent-east-uid');
+            myAgentIdentifiers.add('agent-east-kolkata');
+          }
+          if (userEmail.includes('agent.west')) {
+            myAgentIdentifiers.add('demo-agent-west-uid');
+            myAgentIdentifiers.add('agent-west-mumbai');
           }
         }
-        if (myAgentId) {
-          orders = orders.filter((o) => o.assignedAgentId === myAgentId || o.assignedAgent?.id === myAgentId);
-        } else {
-          orders = [];
+        for (const [aId, aData] of agentsMap.entries()) {
+          const aEmail = (aData.user?.email || '').toLowerCase();
+          if (
+            aData.userId === currentUser.uid ||
+            aId === currentUser.uid ||
+            (userEmail && aEmail === userEmail)
+          ) {
+            myAgentIdentifiers.add(aId);
+            if (aData.userId) myAgentIdentifiers.add(aData.userId);
+          }
         }
+        orders = orders.filter(
+          (o) =>
+            (Boolean(o.assignedAgentId) && myAgentIdentifiers.has(o.assignedAgentId!)) ||
+            (Boolean(o.assignedAgent?.id) && myAgentIdentifiers.has(o.assignedAgent!.id!)) ||
+            (Boolean(o.assignedAgent?.userId) && myAgentIdentifiers.has(o.assignedAgent!.userId!)) ||
+            (Boolean(o.assignedAgent?.user?.email) && myAgentIdentifiers.has(o.assignedAgent!.user!.email!.toLowerCase()))
+        );
       } else if (userRole === 'CUSTOMER') {
         orders = orders.filter((o) => o.customerId === currentUser.uid);
       }
@@ -531,7 +566,12 @@ export const orderService = {
       orders = orders.filter((o) => o.customerId === params.customerId);
     }
     if (params?.assignedAgentId) {
-      orders = orders.filter((o) => o.assignedAgentId === params.assignedAgentId || o.assignedAgent?.id === params.assignedAgentId);
+      orders = orders.filter(
+        (o) =>
+          o.assignedAgentId === params.assignedAgentId ||
+          o.assignedAgent?.id === params.assignedAgentId ||
+          o.assignedAgent?.userId === params.assignedAgentId
+      );
     }
 
     return orders;
@@ -673,7 +713,16 @@ export const orderService = {
         });
 
         // Trigger Twilio SMS for key delivery milestones
-        const customerPhone = order.pickupContactPhone || order.user?.phone || '';
+        let customerPhone = order.pickupContactPhone || '';
+        if (!customerPhone && order.customerId) {
+          try {
+            const customerUserDoc = await getDoc(doc(db, 'users', order.customerId));
+            if (customerUserDoc.exists()) customerPhone = customerUserDoc.data().phone || '';
+          } catch {
+            // ignore
+          }
+        }
+
         if (customerPhone) {
           if (data.status === 'OUT_FOR_DELIVERY') {
             smsService.sendOutForDeliverySMS(

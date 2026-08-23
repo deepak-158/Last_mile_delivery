@@ -52,15 +52,16 @@ export default function AdminNotificationsPage() {
       }
     );
 
-    // Fetch users for target selector
-    getDocs(collection(db, 'users'))
-      .then((snap) => {
-        const uList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setUsers(uList);
-      })
-      .catch((err) => console.warn('Failed to load users:', err));
+    // Realtime listener for users to always have fresh phone numbers
+    const unsubUsers = onSnapshot(collection(db, 'users'), (snap) => {
+      const uList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setUsers(uList);
+    });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsubUsers();
+    };
   }, []);
 
   const usersMap = useMemo(() => {

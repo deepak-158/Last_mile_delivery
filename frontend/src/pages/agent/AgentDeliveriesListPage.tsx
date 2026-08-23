@@ -15,14 +15,8 @@ export default function AgentDeliveriesListPage() {
   const fetchAgentOrders = async () => {
     setLoading(true);
     try {
-      const meRes = await agentApi.getMe().catch(() => ({ data: null }));
-      const myAgent = meRes.data;
-      if (myAgent) {
-        const res = await orderApi.getAll({ assignedAgentId: myAgent.id });
-        setOrders((res.data || []).filter((o: any) => o.assignedAgentId === myAgent.id || o.assignedAgent?.id === myAgent.id));
-      } else {
-        setOrders([]);
-      }
+      const res = await orderApi.getAll();
+      setOrders(res.data || []);
     } catch (err: any) {
       console.error('Failed to load agent orders:', err);
     } finally {
