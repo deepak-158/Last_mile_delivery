@@ -51,5 +51,7 @@ Thumbs.db
 .tempmediaStorage/
 .user_uploaded/
 LAST_MILE_DELIVERY_PROJECT.zip
+Delivero_LastMileDelivery_Project.zip
+*.zip
 .firebase/
 
